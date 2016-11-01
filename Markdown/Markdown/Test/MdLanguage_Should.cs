@@ -8,8 +8,8 @@ namespace Markdown
     {
         [TestCase("a b c d", TestName = "Simple string")]
         [TestCase("a b __c d__", TestName = "Bold")]
-        [TestCase("a b _c d_", TestName = "Shor bold")]
-        [TestCase("a __b _c d_ e__", TestName = "Shor bold in bold")]
+        [TestCase("a b _c d_ ", TestName = "Italic")]
+        [TestCase("a __b _c d_ e__", TestName = "Italic in bold")]
         public void CorrectParseAndBuild(string source)
         {
             var language = new MdLanguage();
@@ -21,7 +21,7 @@ namespace Markdown
         [TestCase("a __b c d__ e", "a <strong>b c d</strong> e", TestName = "Bold to strong")]
         [TestCase("a _b c d_ e", "a <em>b c d</em> e", TestName = "Short bold to strong")]
         [TestCase("__a _b c d_ e__", "<strong>a <em>b c d</em> e</strong>", TestName = "Short bold in bold")]
-        [TestCase("_a __b c d__ e_", "a <em>b c d</em>", TestName = "__ in short bold")]
+        [TestCase("_a __b c d__ e_", "<em>a </em><em>b c d</em><em> e</em>", TestName = "__ in short bold")]
         public void CorrectParseAndBuildToHtml(string md, string expectedHtml)
         {
             var mdLanguage = new MdLanguage();

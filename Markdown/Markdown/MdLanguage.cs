@@ -9,7 +9,7 @@ namespace Markdown
             var builder = new SintacticBuilder();
             builder.AddBorders("bold", "__", "__");
             builder.AddNestedTags("bold", "italic");
-            builder.AddBorders("italic", " _", "_ ");
+            builder.AddBorders("italic", "_", "_");
             builder.AddToRoot("bold", "italic");
             return builder.Build();
         }

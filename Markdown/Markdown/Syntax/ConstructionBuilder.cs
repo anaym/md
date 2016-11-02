@@ -12,6 +12,7 @@ namespace Markdown.Syntax
         public Border Begin { get; set; }
         public Border End { get; set; }
         public List<string> NestedTags { get; }
+        public bool IsRootableTag;
 
         public ConstructionBuilder(string tag, Border begin, Border end, IEnumerable<string> nestedTags)
         {

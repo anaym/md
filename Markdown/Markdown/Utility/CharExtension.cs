@@ -1,6 +1,7 @@
 ﻿using System;
+using Markdown.Syntax;
 
-namespace Markdown.Syntax
+namespace Markdown.Utility
 {
     public static class CharExtension
     {

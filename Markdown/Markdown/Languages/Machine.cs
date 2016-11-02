@@ -1,30 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Markdown.Syntax;
 using Markdown.StringParser;
+using Markdown.Syntax;
 
-namespace Markdown
+namespace Markdown.Languages
 {
-    public class Machine
+    internal class Machine
     {
         public static readonly string RootTag = null;
 
         //TODO: надо перенатроить решарпер, чтобы не предлагал писать поля с _
         private readonly Syntax.LanguageSyntax languageSyntax;
-        private readonly Stack<SintacticNode> tagStack;
+        private readonly Stack<SyntaxNode> tagStack;
         
         public readonly ParsedString String;
-        public readonly SintacticNode Root;
+        public readonly SyntaxNode Root;
 
         public int Position;
 
-        public SintacticNode NowNode => tagStack.Peek();
+        public SyntaxNode NowNode => tagStack.Peek();
         public string NowTag => NowNode.Lexem;
         public Construction NowConstruction => NowTag == RootTag ? null : languageSyntax.GetConstruction(NowTag);
         public IEnumerable<Construction> NowAvaibleConstructions => languageSyntax.GetAvaibleConstructions(NowTag);
 
         public void BackOnStack() => tagStack.Pop();
-        public void AddNestedNode(SintacticNode node) => NowNode.NestesNodes.Add(node);
+        public void AddNestedNode(SyntaxNode node) => NowNode.NestesNodes.Add(node);
         public void ForwardOnStack() => tagStack.Push(NowNode.NestesNodes.Last());
 
         public Machine(string source, Syntax.LanguageSyntax languageSyntax)
@@ -32,8 +32,8 @@ namespace Markdown
             this.languageSyntax = languageSyntax;
             String  = new ParsedString(source, languageSyntax.Escape);
             Position = 0;
-            tagStack = new Stack<SintacticNode>();
-            Root = SintacticNode.CreateTag(RootTag);
+            tagStack = new Stack<SyntaxNode>();
+            Root = SyntaxNode.CreateTag(RootTag);
             tagStack.Push(Root);
         }
     }

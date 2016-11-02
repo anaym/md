@@ -1,5 +1,6 @@
 ﻿using System;
 using Markdown.StringParser;
+using Markdown.Utility;
 
 namespace Markdown.Syntax
 {

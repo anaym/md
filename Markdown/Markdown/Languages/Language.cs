@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DLibrary.Enumerations;
 using Markdown.Syntax;
 
-namespace Markdown
+namespace Markdown.Languages
 {
     public class Language
     {
@@ -17,7 +14,7 @@ namespace Markdown
             Syntax = syntax;
         }
 
-        public SintacticNode Parse(string line)
+        public SyntaxNode Parse(string line)
         {
             var machine = new Machine(line, Syntax);
             for (machine.Position = 0; machine.Position < machine.String.Length; machine.Position = ReadNextTag(machine))
@@ -25,7 +22,7 @@ namespace Markdown
             return machine.Root;
         }
 
-        public int ReadNextTag(Machine machine)
+        private int ReadNextTag(Machine machine)
         {
             var pos = ReadEndOfThisTag(machine) ?? ReadBeginOfNestedTag(machine) ?? ReadRawText(machine);
             if (pos == null)
@@ -33,7 +30,7 @@ namespace Markdown
             return pos.Value;
         }
 
-        public int? ReadEndOfThisTag(Machine machine)
+        private int? ReadEndOfThisTag(Machine machine)
         {
             if (machine.NowTag == Machine.RootTag)
                 return null;
@@ -46,23 +43,23 @@ namespace Markdown
             return null;
         }
 
-        public int? ReadBeginOfNestedTag(Machine machine)
+        private int? ReadBeginOfNestedTag(Machine machine)
         {
             var next = machine
                 .NowAvaibleConstructions
                 .FirstOrDefault(c => c.Is(machine.String, machine.Position));
 
             if (next == null) return null;
-            machine.AddNestedNode(SintacticNode.CreateTag(next.Tag));
+            machine.AddNestedNode(SyntaxNode.CreateTag(next.Tag));
             machine.ForwardOnStack();
             return machine.Position + machine.NowConstruction.Begin.Length;
         }
 
-        public int? ReadRawText(Machine machine)
+        private int? ReadRawText(Machine machine)
         {
             var end = FindEndOfRawText(machine);
             var raw = machine.String.ToString().Substring(machine.Position, end - machine.Position);
-            machine.AddNestedNode(SintacticNode.CreateRawString(raw));
+            machine.AddNestedNode(SyntaxNode.CreateRawString(raw));
             return end;
         }
 
@@ -88,7 +85,7 @@ namespace Markdown
             }
         }
 
-        public string Build(SintacticNode tree)
+        public string Build(SyntaxNode tree)
         {
             if (!tree.IsTag)
                 return tree.Lexem;

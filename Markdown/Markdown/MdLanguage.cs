@@ -7,9 +7,10 @@ namespace Markdown
         public static Sintactic.Sintactic GetSintactic()
         {
             var builder = new SintacticBuilder();
-            builder.AddBorders("bold", new Border(CharType.Any, "__", CharType.Any), new Border(CharType.Any, "__", CharType.Any));
+            builder.Escape = '\\';
+            builder.AddBorders("bold", new Border(CharType.Space, "__", CharType.DigitOrLetter), new Border(CharType.DigitOrLetter, "__", CharType.Space));
             builder.AddNestedTags("bold", "italic");
-            builder.AddBorders("italic", new Border(CharType.Any, "_", CharType.Any), new Border(CharType.Any, "_", CharType.Any));
+            builder.AddBorders("italic", new Border(CharType.Space, "_", CharType.DigitOrLetter), new Border(CharType.DigitOrLetter, "_", CharType.Space));
             builder.AddToRoot("bold", "italic");
             return builder.Build();
         }

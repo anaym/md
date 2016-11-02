@@ -9,11 +9,11 @@ namespace Markdown.Sintactic
     public class ConstructionBuilder
     {
         public string Tag { get; set; }
-        public string Begin { get; set; }
-        public string End { get; set; }
+        public Border Begin { get; set; }
+        public Border End { get; set; }
         public List<string> NestedTags { get; }
 
-        public ConstructionBuilder(string tag, string begin, string end, IEnumerable<string> nestedTags)
+        public ConstructionBuilder(string tag, Border begin, Border end, IEnumerable<string> nestedTags)
         {
             Tag = tag;
             Begin = begin;
@@ -21,7 +21,7 @@ namespace Markdown.Sintactic
             NestedTags = nestedTags.ToList();
         }
 
-        public ConstructionBuilder(string tag = null, string begin = null, string end = null)
+        public ConstructionBuilder(string tag = null, Border begin = null, Border end = null)
             : this(tag, begin, end, new string[0])
         { }
 

@@ -11,13 +11,12 @@ namespace Markdown.Sintactic
         private readonly ImmutableDictionary<string, Construction> constructions;
         private readonly ImmutableHashSet<string> rootTags;
 
+        public readonly char Escape;
         public readonly ImmutableHashSet<string> Alphabet;
 
-        /// <exception cref="ArgumentNullException">Значение параметра <paramref name="source" />, <paramref name="keySelector" /> или <paramref name="elementSelector" /> — null.– или –Функция <paramref name="keySelector" /> возвращает null в качестве ключа.</exception>
-        /// <exception cref="ArgumentException">Функция <paramref name="keySelector" /> выдает дубликаты ключей для двух элементов.</exception>
-        /// <exception cref="Exception">Condition.</exception>
-        public Sintactic(IEnumerable<string> rootTags, IEnumerable<Construction> constructions)
+        public Sintactic(IEnumerable<string> rootTags, IEnumerable<Construction> constructions, char escape)
         {
+            Escape = escape;
             this.rootTags = rootTags.ToImmutableHashSet();
             this.constructions = constructions.ToImmutableDictionary(c => c.Tag, c => c);
             Alphabet = this.constructions.Select(p => p.Key).Union(this.rootTags).ToImmutableHashSet();
@@ -38,7 +37,6 @@ namespace Markdown.Sintactic
             return rootTags.Select(GetConstruction);
         }
 
-        /// <exception cref="ArgumentNullException">Параметр <paramref name="key" /> имеет значение null.</exception>
         public IEnumerable<Construction> GetAvaibleConstructions(string nowTag)
         {
             if (nowTag == null) return GetRootAvaible();

@@ -64,11 +64,16 @@
   <ItemGroup>
     <Compile Include="HtmlLanguage.cs" />
     <Compile Include="Language.cs" />
+    <Compile Include="Machine.cs" />
     <Compile Include="MdLanguage.cs" />
+    <Compile Include="Sintactic\Border.cs" />
+    <Compile Include="Sintactic\CharExtension.cs" />
+    <Compile Include="Sintactic\CharType.cs" />
     <Compile Include="Sintactic\ConstructionBuilder.cs" />
     <Compile Include="Sintactic\Sintactic.cs" />
     <Compile Include="Sintactic\Construction.cs" />
     <Compile Include="Sintactic\SintacticBuilder.cs" />
+    <Compile Include="StringParser\ParsedString.cs" />
     <Compile Include="Test\MdLanguage_Should.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -77,6 +82,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="README.md" />
+    <None Include="Spec.md" />
+    <Compile Include="StringParser\ParsedString.Test.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -13,5 +13,7 @@ namespace Markdown
             this.Lexem = lexem;
             NestesNodes = new List<SintacticNode>();
         }
+
+        public override string ToString() => Lexem;
     }
 }

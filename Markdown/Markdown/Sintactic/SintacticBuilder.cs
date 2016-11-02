@@ -11,6 +11,8 @@ namespace Markdown.Sintactic
         public readonly Dictionary<string, ConstructionBuilder> Constructions;
         public readonly HashSet<string> RootTags;
 
+        public char Escape;
+
         public SintacticBuilder()
         {
             Constructions = new Dictionary<string, ConstructionBuilder>();
@@ -29,8 +31,7 @@ namespace Markdown.Sintactic
                 RootTags.Add(tag);
             }
         }
-
-        public void AddBorders(string tag, string begin, string end)
+        public void AddBorders(string tag, Border begin, Border end)
         {
             if (!Constructions.ContainsKey(tag))
                 AddTag(tag);
@@ -45,15 +46,11 @@ namespace Markdown.Sintactic
             Constructions[tag].NestedTags.AddRange(nested);
         }
 
-        /// <exception cref="ArgumentException">Tag alredy exist</exception>
         public void AddConstruction(Construction construction)
         {
             Constructions.Add(construction.Tag, new ConstructionBuilder(construction));
         }
 
-        /// <exception cref="Exception">Condition.</exception>
-        /// <exception cref="ArgumentNullException">Значение параметра <paramref name="source" /> или <paramref name="selector" /> — null.</exception>
-        /// <exception cref="ArgumentException">Функция <paramref name="keySelector" /> выдает дубликаты ключей для двух элементов.</exception>
-        public Sintactic Build() => new Sintactic(RootTags, Constructions.Select(p => p.Value.Build()));
+        public Sintactic Build() => new Sintactic(RootTags, Constructions.Select(p => p.Value.Build()), Escape);
     }
 }

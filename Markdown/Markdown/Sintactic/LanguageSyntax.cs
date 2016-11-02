@@ -4,9 +4,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using DLibrary.Enumerations;
 
-namespace Markdown.Sintactic
+namespace Markdown.Syntax
 {
-    public class Sintactic
+    public class LanguageSyntax
     {
         private readonly ImmutableDictionary<string, Construction> constructions;
         private readonly ImmutableHashSet<string> rootTags;
@@ -14,7 +14,7 @@ namespace Markdown.Sintactic
         public readonly char Escape;
         public readonly ImmutableHashSet<string> Alphabet;
 
-        public Sintactic(IEnumerable<string> rootTags, IEnumerable<Construction> constructions, char escape)
+        public LanguageSyntax(IEnumerable<string> rootTags, IEnumerable<Construction> constructions, char escape)
         {
             Escape = escape;
             this.rootTags = rootTags.ToImmutableHashSet();

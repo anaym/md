@@ -1,7 +1,7 @@
 ﻿using System;
 using Markdown.StringParser;
 
-namespace Markdown.Sintactic
+namespace Markdown.Syntax
 {
     public class Border
     {

@@ -4,23 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DLibrary.Enumerations;
-using Markdown.Sintactic;
+using Markdown.Syntax;
 
 namespace Markdown
 {
     public class Language
     {
-        public readonly Sintactic.Sintactic Sintactic;
+        public readonly LanguageSyntax Syntax;
 
-        public Language(Sintactic.Sintactic sintactic)
+        public Language(LanguageSyntax syntax)
         {
-            Sintactic = sintactic;
+            Syntax = syntax;
         }
 
-        public SintacticNode Parse(string text)
+        public SintacticNode Parse(string line)
         {
-            var machine = new Machine(text, Sintactic);
-            for (; machine.Position < machine.String.Length; machine.Position = ReadNextTag(machine))
+            var machine = new Machine(line, Syntax);
+            for (machine.Position = 0; machine.Position < machine.String.Length; machine.Position = ReadNextTag(machine))
             { }
             return machine.Root;
         }
@@ -53,7 +53,7 @@ namespace Markdown
                 .FirstOrDefault(c => c.Is(machine.String, machine.Position));
 
             if (next == null) return null;
-            machine.AddNested(new SintacticNode(next.Tag));
+            machine.AddNestedNode(SintacticNode.CreateTag(next.Tag));
             machine.ForwardOnStack();
             return machine.Position + machine.NowConstruction.Begin.Length;
         }
@@ -62,7 +62,7 @@ namespace Markdown
         {
             var end = FindEndOfRawText(machine);
             var raw = machine.String.ToString().Substring(machine.Position, end - machine.Position);
-            machine.AddNested(new SintacticNode(raw));
+            machine.AddNestedNode(SintacticNode.CreateRawString(raw));
             return end;
         }
 
@@ -90,11 +90,11 @@ namespace Markdown
 
         public string Build(SintacticNode tree)
         {
-            if (tree.IsEnd)
+            if (!tree.IsTag)
                 return tree.Lexem;
             if (tree.Lexem == null)
                 return tree.NestesNodes.SequenceToString(Build, "", "", "");
-            var construction = Sintactic.GetConstruction(tree.Lexem);
+            var construction = Syntax.GetConstruction(tree.Lexem);
             return construction.Begin + tree.NestesNodes.SequenceToString(Build, "", "", "") + construction.End;
         }
     }

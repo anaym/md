@@ -3,85 +3,76 @@ using NUnit.Framework;
 
 namespace Markdown
 {
+    //TODO: проверить имена
     [TestFixture]
     public class MdLanguage_Should
     {
-        // уменьшить размер примера строки до самой сути "a b __c d__" --> "__a__"
+        private MdLanguage mdLanguage;
+        private HtmlLanguage htmlLanguage;
+
+        [SetUp]
+        public void SetUp()
+        {
+            mdLanguage = new MdLanguage();
+            htmlLanguage = new HtmlLanguage();
+        }
+
+
         [TestCase("a b c d", TestName = "Simple string")]
         [TestCase("a b __c d__", TestName = "Bold")]
         [TestCase("a b _c d_ ", TestName = "Italic")]
         [TestCase("a __b _c d_ e__", TestName = "Italic in bold")]
         public void CorrectParseAndBuild(string source)
         {
-            var language = new MdLanguage();
-            var tree = language.Parse(source);
-            var builded = language.Build(tree);
+            var tree = mdLanguage.Parse(source);
+            var builded = mdLanguage.Build(tree);
             builded.Should().Be(source);
         }
 
-        //не очень читается с When
-        //тестраннер перемешает тесткейсы, лучше убрать номера
-        [TestCase("\\_ab\\_", "_ab_", TestName = "1. Escaping")]
-        [TestCase("_ ab_", "_ ab_", TestName = "2. Space after openned")]
-        [TestCase("_ab _", "_ab _", TestName = "3. Space before closed")]
-        [TestCase("c_ab_", "c_ab_", TestName = "4. No space before oppened")]
-        [TestCase("_ab_c", "_ab_c", TestName = "5. No space after closed")]
-        [TestCase("_ab", "_ab", TestName = "6. Singletone")]
-        [TestCase("1_2_3", "1_2_3", TestName = "7. Number string")]
-        [TestCase("a_b_c", "a_b_c", TestName = "8. Letter string")]
-        public void NotParseItalic_When(string mdString, string expectedHtmlString)
+        [TestCase("\\_ab\\_", ExpectedResult = "_ab_", TestName = "Escaping")]
+        [TestCase("_ ab_", ExpectedResult = "_ ab_", TestName = "Space after openned")]
+        [TestCase("_ab _", ExpectedResult = "_ab _", TestName = "Space before closed")]
+        [TestCase("c_ab_", ExpectedResult = "c_ab_", TestName = "No space before oppened")]
+        [TestCase("_ab_c", ExpectedResult = "_ab_c", TestName = "No space after closed")]
+        [TestCase("_ab", ExpectedResult = "_ab", TestName = "Singletone")]
+        [TestCase("1_2_3", ExpectedResult = "1_2_3", TestName = "Number string")]
+        [TestCase("a_b_c", ExpectedResult = "a_b_c", TestName = "Letter string")]
+        public string NotParseItalic_When(string mdString)
         {
-            var mdLanguage = new MdLanguage();
-            var htmlLanguage = new HtmlLanguage();
             var tree = mdLanguage.Parse(mdString);
-            var html = htmlLanguage.Build(tree);
-            html.Should().Be(expectedHtmlString);
+            return htmlLanguage.Build(tree);
         }
 
-        //смотри выше
-        //7 и 8 тесткейс проверяют одно и тоже, нужен отдельный тест на возможность парсить строки с цифрами
-        [TestCase("\\_\\_ab\\_\\_", "__ab__", TestName = "1. Escaping")]
-        [TestCase("__ ab__", "__ ab__", TestName = "2. Space after openned")]
-        [TestCase("__ab __", "__ab __", TestName = "3. Space before closed")]
-        [TestCase("c__ab__", "c__ab__", TestName = "4. No space before oppened")]
-        [TestCase("__ab__c", "__ab__c", TestName = "5. No space after closed")]
-        [TestCase("__ab", "__ab", TestName = "6. Singletone")]
-        [TestCase("1__2__3", "1__2__3", TestName = "7. Number string")]
-        [TestCase("a__b__c", "a__b__c", TestName = "8. Letter string")]
-        public void NotParseBold_When(string mdString, string expectedHtmlString)
+        [TestCase("\\_\\_ab\\_\\_", ExpectedResult = "__ab__", TestName = "Escaping")]
+        [TestCase("__ ab__", ExpectedResult = "__ ab__", TestName = "Space after openned")]
+        [TestCase("__ab __", ExpectedResult = "__ab __", TestName = "Space before closed")]
+        [TestCase("c__ab__", ExpectedResult = "c__ab__", TestName = "No space before oppened")]
+        [TestCase("__ab__c", ExpectedResult = "__ab__c", TestName = "No space after closed")]
+        [TestCase("__ab", ExpectedResult = "__ab", TestName = "Singletone")]
+        [TestCase("1__2__3", ExpectedResult = "1__2__3", TestName = "Number string")]
+        [TestCase("a__b__c", ExpectedResult = "a__b__c", TestName = "Letter string")]
+        public string NotParseBold_When(string mdString)
         {
-            //maybe create mdLanguage in SetUp?
-            var mdLanguage = new MdLanguage();
-            var htmlLanguage = new HtmlLanguage();
             var tree = mdLanguage.Parse(mdString);
-            var html = htmlLanguage.Build(tree);
-            html.Should().Be(expectedHtmlString);
+            return htmlLanguage.Build(tree);
         }
 
-        //TODO: SintacticNode: флаг это rawString или пустой тег
-        //Use Result or ExpectedResult and return value instead of use ``expected`` parameter
-        [TestCase("_a __b c d__ e_", "<em>a __b c d__ e</em>", TestName = "Bold, when bold in italic")]
-        [TestCase("__a _b", "__a _b", TestName = "when bold and italic is singletone")]
-        public void NotParse(string mdString, string expectedHtmlString)
+        [TestCase("_a __b c d__ e_", ExpectedResult = "<em>a __b c d__ e</em>", TestName = "Bold, when bold in italic")]
+        [TestCase("__a _b", ExpectedResult = "__a _b", TestName = "when bold and italic is singletone")]
+        public string NotParse(string mdString)
         {
-            var mdLanguage = new MdLanguage();
-            var htmlLanguage = new HtmlLanguage();
-            //
             var tree = mdLanguage.Parse(mdString);
-            var html = htmlLanguage.Build(tree);
-            html.Should().Be(expectedHtmlString);
+            return htmlLanguage.Build(tree);
         }
 
-        //ExpectedResult!
-        [TestCase("a _b c d_ e", "a <em>b c d</em> e", TestName = "Italic to em")]
-        [TestCase("__a _b c d_ e__", "<strong>a <em>b c d</em> e</strong>", TestName = "Italic in bold")]
-        public void CorrectParse_When(string md, string expectedHtml)
+        [TestCase("a _b c d_ e", ExpectedResult = "a <em>b c d</em> e", TestName = "Italic to em")]
+        [TestCase("a __b c d__ e", ExpectedResult = "a <strong>b c d</strong> e", TestName = "Bold to strong")]
+        [TestCase("a _b c d_ __e__", ExpectedResult = "a <em>b c d</em> <strong>e</strong>", TestName = "Bold next to italic")]
+        [TestCase("__a _b c d_ e__", ExpectedResult = "<strong>a <em>b c d</em> e</strong>", TestName = "Italic in bold")]
+        public string CorrectParse_When(string md)
         {
-            var mdLanguage = new MdLanguage();
-            var htmlLanguage = new HtmlLanguage();
             var tree = mdLanguage.Parse(md);
-            var html = htmlLanguage.Build(tree);
-            html.Should().Be(expectedHtml);
+            return htmlLanguage.Build(tree);
         }
     }
 }

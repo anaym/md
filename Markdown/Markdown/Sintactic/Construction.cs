@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using Markdown.StringParser;
 
-namespace Markdown.Sintactic
+namespace Markdown.Syntax
 {
     public class Construction
     {

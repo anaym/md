@@ -16,6 +16,7 @@ namespace Markdown.StringParser
         {
             var buffer = new List<Char>();
             var escaped = false;
+            //предлагаю заменить на методы с ref параметрами, подумать, как их использовать
             foreach (var c in str)
             {
                 if (!escaped)

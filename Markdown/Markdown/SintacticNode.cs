@@ -6,11 +6,15 @@ namespace Markdown
     {
         public readonly string Lexem;
         public readonly List<SintacticNode> NestesNodes;
-        public bool IsEnd => NestesNodes.Count == 0;
+        public readonly bool IsTag;
 
-        public SintacticNode(string lexem)
+        public static SintacticNode CreateTag(string tag) => new SintacticNode(tag, true);
+        public static SintacticNode CreateRawString(string rawString) => new SintacticNode(rawString, false);
+
+        public SintacticNode(string lexem, bool isTag)
         {
             this.Lexem = lexem;
+            IsTag = isTag;
             NestesNodes = new List<SintacticNode>();
         }
 

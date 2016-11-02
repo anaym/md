@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Markdown.Sintactic
+namespace Markdown.Syntax
 {
-    public class SintacticBuilder
+    public class SyntaxBuilder
     {
         public readonly Dictionary<string, ConstructionBuilder> Constructions;
         public readonly HashSet<string> RootTags;
 
         public char Escape;
 
-        public SintacticBuilder()
+        public SyntaxBuilder()
         {
             Constructions = new Dictionary<string, ConstructionBuilder>();
             RootTags = new HashSet<string>();
@@ -51,6 +51,6 @@ namespace Markdown.Sintactic
             Constructions.Add(construction.Tag, new ConstructionBuilder(construction));
         }
 
-        public Sintactic Build() => new Sintactic(RootTags, Constructions.Select(p => p.Value.Build()), Escape);
+        public LanguageSyntax Build() => new LanguageSyntax(RootTags, Constructions.Select(p => p.Value.Build()), Escape);
     }
 }

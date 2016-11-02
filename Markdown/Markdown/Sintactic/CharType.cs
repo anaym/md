@@ -1,4 +1,4 @@
-﻿namespace Markdown.Sintactic
+﻿namespace Markdown.Syntax
 {
     public enum CharType
     {

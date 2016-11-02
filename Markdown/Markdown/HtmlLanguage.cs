@@ -1,12 +1,12 @@
-﻿using Markdown.Sintactic;
+﻿using Markdown.Syntax;
 
 namespace Markdown
 {
     public class HtmlLanguage : Language
     {
-        public static Sintactic.Sintactic GetSintactic()
+        public static Syntax.LanguageSyntax GetSintactic()
         {
-            var builder = new SintacticBuilder();
+            var builder = new SyntaxBuilder();
             builder.AddBorders("bold", new Border(CharType.Any, "<strong>", CharType.Any), new Border(CharType.Any,  "</strong>", CharType.Any));
             builder.AddNestedTags("bold", "italic");
             builder.AddBorders("italic", new Border(CharType.Any, "<em>", CharType.Any), new Border(CharType.Any, "</em>", CharType.Any));

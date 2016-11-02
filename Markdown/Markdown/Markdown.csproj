@@ -70,9 +70,9 @@
     <Compile Include="Sintactic\CharExtension.cs" />
     <Compile Include="Sintactic\CharType.cs" />
     <Compile Include="Sintactic\ConstructionBuilder.cs" />
-    <Compile Include="Sintactic\Sintactic.cs" />
+    <Compile Include="Sintactic\LanguageSyntax.cs" />
     <Compile Include="Sintactic\Construction.cs" />
-    <Compile Include="Sintactic\SintacticBuilder.cs" />
+    <Compile Include="Sintactic\SyntaxBuilder.cs" />
     <Compile Include="StringParser\ParsedString.cs" />
     <Compile Include="Test\MdLanguage_Should.cs" />
     <Compile Include="Program.cs" />

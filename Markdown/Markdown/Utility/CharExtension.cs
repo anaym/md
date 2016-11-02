@@ -3,6 +3,7 @@ using Markdown.Syntax;
 
 namespace Markdown.Utility
 {
+    //потому что запрещены regexp-ы
     public static class CharExtension
     {
         public static bool Is(this char c, CharType type)

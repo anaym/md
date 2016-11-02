@@ -4,6 +4,7 @@ using Markdown.Utility;
 
 namespace Markdown.Syntax
 {
+    //потому что запрещены regexp-ы
     public class Border
     {
         private readonly CharType prevChar;

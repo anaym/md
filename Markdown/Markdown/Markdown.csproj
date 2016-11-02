@@ -74,7 +74,7 @@
     <Compile Include="Syntax\Construction.cs" />
     <Compile Include="Syntax\LanguageSyntaxBuilder.cs" />
     <Compile Include="StringParser\ParsedString.cs" />
-    <Compile Include="Test\MdLanguage_Should.cs" />
+    <Compile Include="Test\MdLanguage.Test.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Syntax\SyntaxNode.cs" />

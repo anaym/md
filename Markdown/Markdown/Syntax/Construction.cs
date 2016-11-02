@@ -21,6 +21,7 @@ namespace Markdown.Syntax
             return End.Find(str, pos + Begin.Length) != null;
         }
 
+        //потому что запрещены regexp-ы
         /// <exception cref="ArgumentNullException"><paramref name="tag"/> is <see langword="null"/></exception>
         /// <exception cref="ArgumentException">Condition.</exception>
         public Construction(string tag, Border begin, Border end, IEnumerable<string> nestedTags)

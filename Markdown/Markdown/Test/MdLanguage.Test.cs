@@ -17,7 +17,6 @@ namespace Markdown
             htmlLanguage = new HtmlLanguage();
         }
 
-
         [TestCase("a b c d", TestName = "is simple string")]
         [TestCase("a b __c d__", TestName =  "is string with bold-tag")]
         [TestCase("a b _c d_ ", TestName = "is string with italic-tag")]

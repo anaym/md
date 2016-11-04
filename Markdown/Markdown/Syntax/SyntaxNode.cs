@@ -5,20 +5,21 @@ namespace Markdown
 {
     public class SyntaxNode
     {
-        public readonly string Lexem;
-        public readonly List<SyntaxNode> NestesNodes;
+        public readonly string TagName;
+        public readonly List<SyntaxNode> NestedNodes;
         public readonly bool IsTag;
+        public bool IsRawString => !IsTag;
 
         public static SyntaxNode CreateTag(string tag) => new SyntaxNode(tag, true);
         public static SyntaxNode CreateRawString(string rawString) => new SyntaxNode(rawString, false);
 
-        public SyntaxNode(string lexem, bool isTag)
+        public SyntaxNode(string tagName, bool isTag)
         {
-            this.Lexem = lexem;
+            this.TagName = tagName;
             IsTag = isTag;
-            NestesNodes = new List<SyntaxNode>();
+            NestedNodes = new List<SyntaxNode>();
         }
 
-        public override string ToString() => Lexem;
+        public override string ToString() => TagName;
     }
 }

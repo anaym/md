@@ -16,68 +16,70 @@ namespace Markdown.Languages
 
         public SyntaxNode Parse(string line)
         {
-            var machine = new Machine(line, Syntax);
-            for (machine.Position = 0; machine.Position < machine.String.Length; machine.Position = ReadNextTag(machine))
-            { }
-            return machine.Root;
+            var parsingState = new ParsingState(line, Syntax);
+            while (!parsingState.IsCompleted)
+            {
+                parsingState.Position = ReadNextTag(parsingState);
+            }
+            return parsingState.Root;
         }
 
-        private int ReadNextTag(Machine machine)
+        private int ReadNextTag(ParsingState parsingState)
         {
-            var pos = ReadEndOfThisTag(machine) ?? ReadBeginOfNestedTag(machine) ?? ReadRawText(machine);
+            var pos = ReadEndOfCurrentTag(parsingState) ?? 
+                ReadBeginOfNestedTag(parsingState) ?? 
+                ReadRawText(parsingState);
             if (pos == null)
-                throw new Exception("Bad string");
+                throw new InvalidOperationException("Bad string");
             return pos.Value;
         }
 
-        private int? ReadEndOfThisTag(Machine machine)
+        private int? ReadEndOfCurrentTag(ParsingState parsingState)
         {
-            if (machine.NowTag == Machine.RootTag)
+            if (!parsingState.IsNowTagClose)
                 return null;
-            if (machine.NowConstruction.End.Is(machine.String, machine.Position))
-            {
-                var ni = machine.NowConstruction.End.Length + machine.Position;
-                machine.BackOnStack();
-                return ni;
-            }
-            return null;
+
+            var newIndex = parsingState.CurrentTag.End.Length + parsingState.Position;
+            parsingState.UpInTree();
+            return newIndex;
         }
 
-        private int? ReadBeginOfNestedTag(Machine machine)
+        private int? ReadBeginOfNestedTag(ParsingState parsingState)
         {
-            var next = machine
-                .NowAvaibleConstructions
-                .FirstOrDefault(c => c.Is(machine.String, machine.Position));
+            var next = parsingState
+                .CurrentAvaibleTags
+                .FirstOrDefault(c => c.Is(parsingState.String, parsingState.Position));
 
-            if (next == null) return null;
-            machine.AddNestedNode(SyntaxNode.CreateTag(next.Tag));
-            machine.ForwardOnStack();
-            return machine.Position + machine.NowConstruction.Begin.Length;
+            if (next == null)
+                return null;
+            parsingState.AddNestedNode(SyntaxNode.CreateTag(next.Name));
+            parsingState.DownInTree();
+            return parsingState.Position + parsingState.CurrentTag.Begin.Length;
         }
 
-        private int? ReadRawText(Machine machine)
+        private int? ReadRawText(ParsingState parsingState)
         {
-            var end = FindEndOfRawText(machine);
-            var raw = machine.String.ToString().Substring(machine.Position, end - machine.Position);
-            machine.AddNestedNode(SyntaxNode.CreateRawString(raw));
+            var end = FindEndOfRawText(parsingState);
+            var raw = parsingState.String.ToString().Substring(parsingState.Position, end - parsingState.Position);
+            parsingState.AddNestedNode(SyntaxNode.CreateRawString(raw));
             return end;
         }
 
-        private int FindEndOfRawText(Machine machine)
+        private int FindEndOfRawText(ParsingState parsingState)
         {
-            var beginNested = machine
-                .NowAvaibleConstructions
-                .Select(c => Tuple.Create(c, c.Begin.Find(machine.String, machine.Position)))
+            var beginNested = parsingState
+                .CurrentAvaibleTags
+                .Select(c => Tuple.Create(c, c.Begin.Find(parsingState.String, parsingState.Position)))
                 .Where(p => p.Item2 != null)
                 .OrderBy(p => p.Item2.Value)
-                .FirstOrDefault(p => p.Item1.Is(machine.String, p.Item2.Value))
+                .FirstOrDefault(p => p.Item1.Is(parsingState.String, p.Item2.Value))
                 ?.Item2;
 
-            var endNow = machine.NowTag == Machine.RootTag ? null : machine.NowConstruction.End.Find(machine.String, machine.Position);
+            var endNow = parsingState.CurrentTagName == ParsingState.RootTagName ? null : parsingState.CurrentTag.End.Find(parsingState.String, parsingState.Position);
 
             if (endNow == null)
             {
-                return beginNested ?? machine.String.Length;
+                return beginNested ?? parsingState.String.Length;
             }
             else
             {
@@ -87,12 +89,12 @@ namespace Markdown.Languages
 
         public string Build(SyntaxNode tree)
         {
-            if (!tree.IsTag)
-                return tree.Lexem;
-            if (tree.Lexem == null)
-                return tree.NestesNodes.SequenceToString(Build, "", "", "");
-            var construction = Syntax.GetConstruction(tree.Lexem);
-            return construction.Begin + tree.NestesNodes.SequenceToString(Build, "", "", "") + construction.End;
+            if (tree.IsRawString)
+                return tree.TagName;
+            if (tree.TagName == null)
+                return tree.NestedNodes.SequenceToString(Build, "", "", "");
+            var construction = Syntax.GetTag(tree.TagName);
+            return construction.Begin + tree.NestedNodes.SequenceToString(Build, "", "", "") + construction.End;
         }
     }
 }

@@ -8,39 +8,39 @@ namespace Markdown.Syntax
 {
     public class LanguageSyntax
     {
-        private readonly ImmutableDictionary<string, Construction> constructions;
+        private readonly ImmutableDictionary<string, Tag> tags;
         private readonly ImmutableHashSet<string> rootTags;
 
-        public readonly char Escape;
+        public readonly char EscapeChar;
         public readonly ImmutableHashSet<string> Alphabet;
 
-        public LanguageSyntax(IEnumerable<string> rootTags, IEnumerable<Construction> constructions, char escape)
+        public LanguageSyntax(IEnumerable<string> rootTags, IEnumerable<Tag> tags, char escapeChar)
         {
-            Escape = escape;
+            EscapeChar = escapeChar;
             this.rootTags = rootTags.ToImmutableHashSet();
-            this.constructions = constructions.ToImmutableDictionary(c => c.Tag, c => c);
-            Alphabet = this.constructions.Select(p => p.Key).Union(this.rootTags).ToImmutableHashSet();
-            var notDescribedTags = Alphabet.Except(this.constructions.Select(p => p.Key));
+            this.tags = tags.ToImmutableDictionary(c => c.Name, c => c);
+            Alphabet = this.tags.Select(p => p.Key).Union(this.rootTags).ToImmutableHashSet();
+            var notDescribedTags = Alphabet.Except(this.tags.Select(p => p.Key));
             if (notDescribedTags.Count != 0)
             {
-                throw new Exception($"Not all tags describes in as construction: {notDescribedTags.SequenceToString()}");
+                throw new InvalidOperationException($"Not all tags describes in as construction: {notDescribedTags.SequenceToString()}"); 
             }
         }
 
-        public Construction GetConstruction(string tag)
+        public Tag GetTag(string tag)
         { 
-            return constructions[tag];
+            return tags[tag];
         }
 
-        public IEnumerable<Construction> GetRootAvaible()
+        public IEnumerable<Tag> GetTagsAvaibleInRoot()
         {
-            return rootTags.Select(GetConstruction);
+            return rootTags.Select(GetTag);
         }
 
-        public IEnumerable<Construction> GetAvaibleConstructions(string nowTag)
+        public IEnumerable<Tag> GetAvaibleTags(string nowTag)
         {
-            if (nowTag == null) return GetRootAvaible();
-            return constructions[nowTag].NestedTags.Select(GetConstruction);
+            if (nowTag == null) return GetTagsAvaibleInRoot();
+            return tags[nowTag].NestedTags.Select(GetTag);
         }
     }
 }

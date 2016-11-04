@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -64,16 +65,17 @@
   <ItemGroup>
     <Compile Include="Languages\HtmlLanguage.cs" />
     <Compile Include="Languages\Language.cs" />
-    <Compile Include="Languages\Machine.cs" />
+    <Compile Include="Languages\ParsingState.cs" />
     <Compile Include="Languages\MdLanguage.cs" />
-    <Compile Include="Syntax\Border.cs" />
+    <Compile Include="StringParser\Char.cs" />
+    <Compile Include="Utility\RegExp.cs" />
     <Compile Include="Utility\CharExtension.cs" />
     <Compile Include="Utility\CharType.cs" />
-    <Compile Include="Syntax\ConstructionBuilder.cs" />
+    <Compile Include="Syntax\TagBuilder.cs" />
     <Compile Include="Syntax\LanguageSyntax.cs" />
-    <Compile Include="Syntax\Construction.cs" />
+    <Compile Include="Syntax\Tag.cs" />
     <Compile Include="Syntax\LanguageSyntaxBuilder.cs" />
-    <Compile Include="StringParser\ParsedString.cs" />
+    <Compile Include="StringParser\EscapedString.cs" />
     <Compile Include="Test\MdLanguage.Test.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

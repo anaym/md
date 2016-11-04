@@ -5,26 +5,26 @@ namespace Markdown.Languages
 {
     public class HtmlLanguage : Language
     {
-        public static LanguageSyntax GetSintactic()
+        private static LanguageSyntax CreateHtmlSyntax()
         {
             var syntax = new LanguageSyntaxBuilder();
-            syntax += new ConstructionBuilder("bold")
+            syntax += new TagBuilder("bold")
             {
-                Begin = new Border(CharType.Any, "<strong>", CharType.Any),
-                End = new Border(CharType.Any, "</strong>", CharType.Any),
+                Begin = new RegExp(CharType.Any, "<strong>", CharType.Any),
+                End = new RegExp(CharType.Any, "</strong>", CharType.Any),
                 IsRootableTag = true,
                 NestedTags = {"italic"}
             };
-            syntax += new ConstructionBuilder("italic")
+            syntax += new TagBuilder("italic")
             {
-                Begin = new Border(CharType.Any, "<em>", CharType.Any),
-                End = new Border(CharType.Any, "</em>", CharType.Any),
+                Begin = new RegExp(CharType.Any, "<em>", CharType.Any),
+                End = new RegExp(CharType.Any, "</em>", CharType.Any),
                 IsRootableTag = true
             };
             return syntax.Build();
         }
 
-        public HtmlLanguage() : base(GetSintactic())
+        public HtmlLanguage() : base(CreateHtmlSyntax())
         {
         }
     }

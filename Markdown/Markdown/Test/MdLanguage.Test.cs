@@ -29,7 +29,7 @@ namespace Markdown
             builded.Should().Be(source);
         }
 
-        [TestCase("\\_ab\\_", ExpectedResult = "_ab_", TestName = "is string with escaped tag")]
+        [TestCase(@"\_ab\_", ExpectedResult = "_ab_", TestName = "is string with escaped tag")]
         [TestCase("_ ab_", ExpectedResult = "_ ab_", TestName = "is string with space after tag begin")]
         [TestCase("_ab _", ExpectedResult = "_ab _", TestName = "is string with space before tag end")]
         [TestCase("c_ab_", ExpectedResult = "c_ab_", TestName = "is string without space before tag begin")]
@@ -43,7 +43,7 @@ namespace Markdown
             return htmlLanguage.Build(tree);
         }
 
-        [TestCase("\\_\\_ab\\_\\_", ExpectedResult = "__ab__", TestName = "is string with escaped tag")]
+        [TestCase(@"\_\_ab\_\_", ExpectedResult = "__ab__", TestName = "is string with escaped tag")]
         [TestCase("__ ab__", ExpectedResult = "__ ab__", TestName = "is string with space after tag begin")]
         [TestCase("__ab __", ExpectedResult = "__ab __", TestName = "is string with space before tag end")]
         [TestCase("c__ab__", ExpectedResult = "c__ab__", TestName = "is string without space before tag begin")]
@@ -65,7 +65,7 @@ namespace Markdown
             return htmlLanguage.Build(tree);
         }
 
-        [TestCase("a _b c d_ e", ExpectedResult = "a <em>b c d</em> e", TestName = "italic-tag")]
+        [TestCase("a _b c d_ e", ExpectedResult ="a <em>b c d</em> e", TestName = "italic-tag")]
         [TestCase("a __b c d__ e", ExpectedResult = "a <strong>b c d</strong> e", TestName = "bold-tag")]
         [TestCase("a _b c d_ __e__", ExpectedResult = "a <em>b c d</em> <strong>e</strong>", TestName = "italic and bold tags")]
         [TestCase("__a _b c d_ e__", ExpectedResult = "<strong>a <em>b c d</em> e</strong>", TestName = "italic-tag in bold-tag")]

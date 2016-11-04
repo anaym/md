@@ -5,26 +5,26 @@ namespace Markdown.Languages
 {
     public class MdLanguage : Language
     {
-        public static Syntax.LanguageSyntax GetSintactic()
+        private static LanguageSyntax CreateMdSyntax()
         {
-            var syntax = new LanguageSyntaxBuilder {Escape = '\\'};
-            syntax += new ConstructionBuilder("bold")
+            var syntax = new LanguageSyntaxBuilder {EscapeChar = '\\'};
+            syntax += new TagBuilder("bold")
             {
-                Begin = new Border(CharType.Space, "__", CharType.DigitOrLetter),
-                End = new Border(CharType.DigitOrLetter, "__", CharType.Space),
+                Begin = new RegExp(CharType.Space, "__", CharType.Digit | CharType.Letter),
+                End = new RegExp(CharType.Digit | CharType.Letter, "__", CharType.Space),
                 IsRootableTag = true,
                 NestedTags = { "italic" }
             };
-            syntax += new ConstructionBuilder("italic")
+            syntax += new TagBuilder("italic")
             {
-                Begin = new Border(CharType.Space, "_", CharType.DigitOrLetter),
-                End = new Border(CharType.DigitOrLetter, "_", CharType.Space),
+                Begin = new RegExp(CharType.Space, "_", CharType.Digit | CharType.Letter),
+                End = new RegExp(CharType.Digit | CharType.Letter, "_", CharType.Space),
                 IsRootableTag = true
             };
             return syntax.Build();
         }
 
-        public MdLanguage() : base(GetSintactic())
+        public MdLanguage() : base(CreateMdSyntax())
         { }
     }
 }

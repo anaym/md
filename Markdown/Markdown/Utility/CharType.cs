@@ -6,9 +6,9 @@ namespace Markdown.Utility
     [Flags]
     public enum CharType
     {
-        Space = 1<<0,
-        Digit = 1<<1,
-        Letter = 1<<2,
-        Any = Space | Digit| Letter
+        Space = 1 << 0,
+        Digit = 1 << 1,
+        Letter = 1 << 2,
+        Any = Space | Digit | Letter
     }
 }

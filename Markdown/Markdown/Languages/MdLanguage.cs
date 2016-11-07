@@ -7,7 +7,7 @@ namespace Markdown.Languages
     {
         private static LanguageSyntax CreateMdSyntax()
         {
-            var syntax = new LanguageSyntaxBuilder {EscapeChar = '\\'};
+            var syntax = new LanguageSyntaxBuilder { EscapeChar = '\\' };
             syntax += new TagBuilder("bold")
             {
                 Begin = new RegExp(CharType.Space, "__", CharType.Digit | CharType.Letter),

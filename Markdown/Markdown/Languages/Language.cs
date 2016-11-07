@@ -91,6 +91,7 @@ namespace Markdown.Languages
         {
             if (tree.IsRawString)
                 return tree.TagName;
+            // CR (krait): string.Join лучше подойдёт здесь, чем SequenceToString.
             if (tree.TagName == null)
                 return tree.NestedNodes.SequenceToString(Build, "", "", "");
             var construction = Syntax.GetTag(tree.TagName);

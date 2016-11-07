@@ -4,8 +4,6 @@ using System.Linq;
 using DLibrary.Enumerations;
 
 namespace Markdown.StringParser
-
-
 {
     public class EscapedString : IEnumerable<Char>
     {
@@ -26,6 +24,7 @@ namespace Markdown.StringParser
             return escaped ? null : new Char(c, false);
         }
 
+        // CR (krait): Зачем нужен аргумент escape?
         private static Char ReadEscaped(char c, char escape, out bool escaped)
         {
             escaped = false;
@@ -36,6 +35,7 @@ namespace Markdown.StringParser
 
         public bool IsOrdinalEqual(string other, int start = 0)
         {
+            // CR (krait): А если other длиннее this?
             for (int i = 0; i < other.Length; i++)
             {
                 if (this[i + start].IsEscaped) return false;
@@ -56,6 +56,7 @@ namespace Markdown.StringParser
             return chars.GetEnumerator();
         }
 
+        // CR (krait): Можно легко обойтись без использования библиотеки: string.Join()
         public override string ToString() => chars.SequenceToString(c => c.Value.ToString(), "", "", "");
     }
 }

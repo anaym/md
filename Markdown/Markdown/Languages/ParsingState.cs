@@ -9,6 +9,7 @@ namespace Markdown.Languages
     {
         public static readonly string RootTagName = null;
 
+        // CR (krait): Всё ещё не перенастроил? :)
         //TODO: надо перенатроить решарпер, чтобы не предлагал писать поля с _
         private readonly LanguageSyntax languageSyntax;
         private readonly Stack<SyntaxNode> tagStack;
@@ -16,6 +17,7 @@ namespace Markdown.Languages
         public readonly EscapedString String;
         public readonly SyntaxNode Root;
 
+        // CR (krait): Нехорошо так просто выставлять наружу голые поля. Оберни в проперти хотя бы.
         public int Position;
         public bool IsCompleted => Position >= String.Length;
 
@@ -30,11 +32,13 @@ namespace Markdown.Languages
             => CurrentTagName != RootTagName && CurrentTag.End.IsMatch(String, Position);
 
         //название метода противоположно тому, что он делает. Кажется, что он что-то возвращает на стек, но он снимает последний элемент
+        // CR (krait): Кажется, тут всё в порядке с названием: когда смотришь на вызов этого метода снаружи, представляешь себе именно дерево, а то, что тут внутри стек - просто детали реализации.
         public void UpInTree() => tagStack.Pop();
+        // CR (krait): Лучше сделать ещё метод SyntaxNode.AddNestedNode, а то получается не очень красиво: откуда-то снаружи добавляем элементы в readonly-поле.
         public void AddNestedNode(SyntaxNode node) => CurrentNode.NestedNodes.Add(node);
         public void DownInTree() => tagStack.Push(CurrentNode.NestedNodes.Last());
 
-        public ParsingState(string source, Syntax.LanguageSyntax languageSyntax)
+        public ParsingState(string source, LanguageSyntax languageSyntax)
         {
             this.languageSyntax = languageSyntax;
             String  = new EscapedString(source, languageSyntax.EscapeChar);

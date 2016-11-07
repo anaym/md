@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Markdown.Syntax
 {
+    // CR (krait): Паттерн работы с билдером прост: создать, подобавлять чего-то, сбилдить. Получать что-то, кроме результата билда, нам незачем. Зачем же тогда реализовывать IEnumerable?
     public class LanguageSyntaxBuilder : IEnumerable<TagBuilder>
     {
+        // CR (krait): Старое название осталось?
+        // CR (krait): Зачем Dictionary, если используются в итоге только Value?
         public readonly Dictionary<string, TagBuilder> Constructions;
         public readonly HashSet<string> RootTags;
 
+        // CR (krait): Более аккуратно будет принять эту штуку в конструкторе.
         public char EscapeChar;
 
         public LanguageSyntaxBuilder()
@@ -25,6 +26,7 @@ namespace Markdown.Syntax
         #region Operations
         public void Add(TagBuilder tag)
         {
+            // CR (krait): Кажется, эти 4 строчки эквивалентны простому Constructions[tag.TagName] = tag;
             if (Constructions.ContainsKey(tag.TagName))
                 Constructions[tag.TagName] = tag;
             else
@@ -32,8 +34,11 @@ namespace Markdown.Syntax
             if (tag.IsRootableTag)
                 RootTags.Add(tag.TagName);
         }
+
+        // CR (krait): Зачем нужна операция удаления в билдере?
         public void Remove(TagBuilder tag) => Remove(tag.TagName);
         public void Remove(string tag) => Constructions.Remove(tag);
+        // CR (krait): А эти операции зачем?
         public TagBuilder Get(string tag) => Constructions[tag];
         public bool Contains(TagBuilder tag) => Contains(tag.TagName);
         public bool Contains(string tag) => Constructions.ContainsKey(tag);

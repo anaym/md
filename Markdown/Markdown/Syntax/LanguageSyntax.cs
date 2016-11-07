@@ -23,6 +23,7 @@ namespace Markdown.Syntax
             var notDescribedTags = Alphabet.Except(this.tags.Select(p => p.Key));
             if (notDescribedTags.Count != 0)
             {
+                // CR (krait): Загадочное сообщение.
                 throw new InvalidOperationException($"Not all tags describes in as construction: {notDescribedTags.SequenceToString()}"); 
             }
         }
@@ -32,13 +33,16 @@ namespace Markdown.Syntax
             return tags[tag];
         }
 
+        // CR (krait): available
         public IEnumerable<Tag> GetTagsAvaibleInRoot()
         {
             return rootTags.Select(GetTag);
         }
 
+        // CR (krait): currentTag
         public IEnumerable<Tag> GetAvaibleTags(string nowTag)
         {
+            // CR (krait): Для имени root-тега где-то была объявлена константа. Надо уж либо её везде использовать, либо её убрать и использовать null.
             if (nowTag == null) return GetTagsAvaibleInRoot();
             return tags[nowTag].NestedTags.Select(GetTag);
         }

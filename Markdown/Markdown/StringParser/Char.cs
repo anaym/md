@@ -1,5 +1,6 @@
 ﻿namespace Markdown.StringParser
 {
+    // CR (krait): Почему не структура?
     public class Char
     {
         public readonly char Value;

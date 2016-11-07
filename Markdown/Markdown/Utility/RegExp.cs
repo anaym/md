@@ -3,6 +3,7 @@ using Markdown.StringParser;
 
 namespace Markdown.Utility
 {
+    // CR (krait): Это не RegExp, не надо вводить в заблуждение :)
     //потому что запрещены regexp-ы
     public class RegExp
     {
@@ -40,6 +41,7 @@ namespace Markdown.Utility
         //TODO: N^2
         public int? Find(EscapedString str, int start)
         {
+            // CR (krait): Правильно стоит тудушка, сделай поиск поэффективнее.
             for (var i = start; i < str.Length; i++)
             {
                 if (IsMatch(str, i)) return i;
@@ -47,6 +49,7 @@ namespace Markdown.Utility
             return null;
         }
 
+        // CR (krait): А чего бы не добавить сюда prevChar и nextChar?
         public override string ToString() => regexp;
     }
 }

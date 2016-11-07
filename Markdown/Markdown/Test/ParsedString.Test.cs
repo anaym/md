@@ -4,9 +4,11 @@ using NUnit.Framework;
 
 namespace Markdown.Test
 {
+    // CR (krait): Нету теста на IsOrdinalEqual.
     [TestFixture]
     public class EscapedString_Should
     {
+        // CR (krait): correctly
     //Use @"   " everywhere!
         [TestCase("", "", TestName = "is empty")]
         [TestCase("a b cdefg", "a b cdefg", TestName = "is simple")]
@@ -15,8 +17,8 @@ namespace Markdown.Test
         [TestCase(@"a \b cd\efg \\", @"a b cdefg \", TestName = "with escape of escape char")]
         public void CorrectParseEscapedLine_WhenString(string source, string expected)
         {
-            var pased = new EscapedString(source, '\\');
-            pased.ToString().Should().Be(expected);
+            var parsed = new EscapedString(source, '\\');
+            parsed.ToString().Should().Be(expected);
         }
     }
 }

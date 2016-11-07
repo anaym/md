@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace Markdown
 {
+    // CR (krait): Почему нет тестов на HtmlLanguage?
     [TestFixture]
     public class MdLanguage_Should
     {
@@ -17,6 +18,7 @@ namespace Markdown
             htmlLanguage = new HtmlLanguage();
         }
 
+        // CR (krait): Немного сбивает с толку название теста. Should correctly rebuild string может быть?
         [TestCase("a b c d", TestName = "is simple string")]
         [TestCase("a b __c d__", TestName =  "is string with bold-tag")]
         [TestCase("a b _c d_ ", TestName = "is string with italic-tag")]
@@ -25,6 +27,7 @@ namespace Markdown
         public void NotMutateInformation_WhenSource(string source)
         {
             var tree = mdLanguage.Parse(source);
+            // CR (krait): build - неправильный глагол.
             var builded = mdLanguage.Build(tree);
             builded.Should().Be(source);
         }
@@ -40,6 +43,7 @@ namespace Markdown
         public string NotParseItalic_WhenSource(string mdString)
         {
             var tree = mdLanguage.Parse(mdString);
+            // CR (krait): Нехорошо. Получается, что MdLanguage и HtmlLanguage зависят друг от друга через тесты.
             return htmlLanguage.Build(tree);
         }
 

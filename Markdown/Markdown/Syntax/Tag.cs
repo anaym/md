@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Markdown.StringParser;
 using Markdown.Utility;
@@ -16,12 +15,14 @@ namespace Markdown.Syntax
 
         private readonly List<string> nestedTags;
 
+        // CR (krait): Название метода сбивает с толку. IsAt было бы понятнее.
         public bool Is(EscapedString str, int pos)
         {
             if (!Begin.IsMatch(str, pos)) return false;
             return End.Find(str, pos + Begin.Length) != null;
         }
 
+        // CR (krait): Что означает описание "Condition."? 
         //потому что запрещены regexp-ы
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/></exception>
         /// <exception cref="ArgumentException">Condition.</exception>

@@ -13,19 +13,19 @@ namespace Markdown.StringParser
         {
             var escaped = false;
             chars = str
-                .Select(c => escaped ? ReadEscaped(c, escapeChar, out escaped) : ReadNonEscaped(c, escapeChar, out escaped))
+                .Select(c => escaped ? ReadEscaped(c, out escaped) : ReadNonEscaped(c, escapeChar, out escaped))
                 .Where(p => p != null)
+                .Select(p => p.Value)
                 .ToArray();
         }
 
-        private static Char ReadNonEscaped(char c, char escapeChar, out bool escaped)
+        private static Char? ReadNonEscaped(char c, char escapeChar, out bool escaped)
         {
             escaped = c == escapeChar;
-            return escaped ? null : new Char(c, false);
+            return escaped ? (Char?)null : new Char(c, false);
         }
 
-        // CR (krait): Зачем нужен аргумент escape?
-        private static Char ReadEscaped(char c, char escape, out bool escaped)
+        private static Char? ReadEscaped(char c, out bool escaped)
         {
             escaped = false;
             return new Char(c, true);
@@ -35,7 +35,8 @@ namespace Markdown.StringParser
 
         public bool IsOrdinalEqual(string other, int start = 0)
         {
-            // CR (krait): А если other длиннее this?
+            if (other.Length > (Length - start)) return false;
+            
             for (int i = 0; i < other.Length; i++)
             {
                 if (this[i + start].IsEscaped) return false;
@@ -56,7 +57,6 @@ namespace Markdown.StringParser
             return chars.GetEnumerator();
         }
 
-        // CR (krait): Можно легко обойтись без использования библиотеки: string.Join()
-        public override string ToString() => chars.SequenceToString(c => c.Value.ToString(), "", "", "");
+        public override string ToString() => string.Join("", chars.Select(c => c.Value));
     }
 }

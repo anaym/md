@@ -68,7 +68,7 @@
     <Compile Include="Languages\ParsingState.cs" />
     <Compile Include="Languages\MdLanguage.cs" />
     <Compile Include="StringParser\Char.cs" />
-    <Compile Include="Utility\RegExp.cs" />
+    <Compile Include="Utility\Template.cs" />
     <Compile Include="Utility\CharExtension.cs" />
     <Compile Include="Utility\CharType.cs" />
     <Compile Include="Syntax\TagBuilder.cs" />

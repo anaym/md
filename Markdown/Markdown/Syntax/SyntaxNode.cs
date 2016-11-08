@@ -5,18 +5,21 @@ namespace Markdown
     public class SyntaxNode
     {
         public readonly string TagName;
-        public readonly List<SyntaxNode> NestedNodes;
+        private readonly List<SyntaxNode> nestedNodes;
         public readonly bool IsTag;
         public bool IsRawString => !IsTag;
 
         public static SyntaxNode CreateTag(string tag) => new SyntaxNode(tag, true);
         public static SyntaxNode CreateRawString(string rawString) => new SyntaxNode(rawString, false);
 
+        public IEnumerable<SyntaxNode> NestedNodes => nestedNodes;
+        public void AddNestedNode(SyntaxNode node) => nestedNodes.Add(node);
+
         public SyntaxNode(string tagName, bool isTag)
         {
             this.TagName = tagName;
             IsTag = isTag;
-            NestedNodes = new List<SyntaxNode>();
+            nestedNodes = new List<SyntaxNode>();
         }
 
         public override string ToString() => TagName;

@@ -48,7 +48,7 @@ namespace Markdown.Languages
         {
             var next = parsingState
                 .CurrentAvaibleTags
-                .FirstOrDefault(c => c.Is(parsingState.String, parsingState.Position));
+                .FirstOrDefault(c => c.IsAt(parsingState.String, parsingState.Position));
 
             if (next == null)
                 return null;
@@ -72,10 +72,10 @@ namespace Markdown.Languages
                 .Select(c => Tuple.Create(c, c.Begin.Find(parsingState.String, parsingState.Position)))
                 .Where(p => p.Item2 != null)
                 .OrderBy(p => p.Item2.Value)
-                .FirstOrDefault(p => p.Item1.Is(parsingState.String, p.Item2.Value))
+                .FirstOrDefault(p => p.Item1.IsAt(parsingState.String, p.Item2.Value))
                 ?.Item2;
 
-            var endNow = parsingState.CurrentTagName == ParsingState.RootTagName ? null : parsingState.CurrentTag.End.Find(parsingState.String, parsingState.Position);
+            var endNow = parsingState.CurrentTagName == LanguageSyntax.RootTagName ? null : parsingState.CurrentTag.End.Find(parsingState.String, parsingState.Position);
 
             if (endNow == null)
             {
@@ -91,11 +91,10 @@ namespace Markdown.Languages
         {
             if (tree.IsRawString)
                 return tree.TagName;
-            // CR (krait): string.Join лучше подойдёт здесь, чем SequenceToString.
             if (tree.TagName == null)
-                return tree.NestedNodes.SequenceToString(Build, "", "", "");
+                return string.Join("", tree.NestedNodes.Select(Build));
             var construction = Syntax.GetTag(tree.TagName);
-            return construction.Begin + tree.NestedNodes.SequenceToString(Build, "", "", "") + construction.End;
+            return construction.Begin.Lexem + string.Join("", tree.NestedNodes.Select(Build)) + construction.End.Lexem;
         }
     }
 }

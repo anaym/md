@@ -7,12 +7,12 @@ namespace Markdown.Syntax
     public class TagBuilder
     {
         public string TagName { get; set; }
-        public RegExp Begin { get; set; }
-        public RegExp End { get; set; }
+        public Template Begin { get; set; }
+        public Template End { get; set; }
         public List<string> NestedTags { get; }
         public bool IsRootableTag;
 
-        public TagBuilder(string tagName, RegExp begin, RegExp end, IEnumerable<string> nestedTags)
+        public TagBuilder(string tagName, Template begin, Template end, IEnumerable<string> nestedTags)
         {
             TagName = tagName;
             Begin = begin;
@@ -20,7 +20,7 @@ namespace Markdown.Syntax
             NestedTags = nestedTags.ToList();
         }
 
-        public TagBuilder(string tagName = null, RegExp begin = null, RegExp end = null)
+        public TagBuilder(string tagName = null, Template begin = null, Template end = null)
             : this(tagName, begin, end, new string[0])
         { }
 

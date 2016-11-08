@@ -9,24 +9,20 @@ namespace Markdown.Syntax
     public class Tag
     {
         public string Name { get; }
-        public RegExp Begin { get; }
-        public RegExp End { get; }
+        public Template Begin { get; }
+        public Template End { get; }
         public IEnumerable<string> NestedTags => nestedTags;
 
         private readonly List<string> nestedTags;
 
-        // CR (krait): Название метода сбивает с толку. IsAt было бы понятнее.
-        public bool Is(EscapedString str, int pos)
+        public bool IsAt(EscapedString str, int pos)
         {
             if (!Begin.IsMatch(str, pos)) return false;
             return End.Find(str, pos + Begin.Length) != null;
         }
 
-        // CR (krait): Что означает описание "Condition."? 
         //потому что запрещены regexp-ы
-        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/></exception>
-        /// <exception cref="ArgumentException">Condition.</exception>
-        public Tag(string name, RegExp begin, RegExp end, IEnumerable<string> nestedTags)
+        public Tag(string name, Template begin, Template end, IEnumerable<string> nestedTags)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (begin == null) throw new ArgumentNullException(nameof(begin));

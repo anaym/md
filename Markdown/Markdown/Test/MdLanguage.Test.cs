@@ -18,18 +18,16 @@ namespace Markdown
             htmlLanguage = new HtmlLanguage();
         }
 
-        // CR (krait): Немного сбивает с толку название теста. Should correctly rebuild string может быть?
         [TestCase("a b c d", TestName = "is simple string")]
         [TestCase("a b __c d__", TestName =  "is string with bold-tag")]
         [TestCase("a b _c d_ ", TestName = "is string with italic-tag")]
         [TestCase("a __b _c d_ e__", TestName = "is string with italic-tag in bold-tag")]
         [TestCase("a _b __c d__ e_", TestName = "is italic-tag and bold-tag permutation string")]
-        public void NotMutateInformation_WhenSource(string source)
+        public void CorrectlyRebuild(string source)
         {
             var tree = mdLanguage.Parse(source);
-            // CR (krait): build - неправильный глагол.
-            var builded = mdLanguage.Build(tree);
-            builded.Should().Be(source);
+            var build = mdLanguage.Build(tree);
+            build.Should().Be(source);
         }
 
         [TestCase(@"\_ab\_", ExpectedResult = "_ab_", TestName = "is string with escaped tag")]

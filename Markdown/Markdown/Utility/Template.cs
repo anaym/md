@@ -3,32 +3,31 @@ using Markdown.StringParser;
 
 namespace Markdown.Utility
 {
-    // CR (krait): Это не RegExp, не надо вводить в заблуждение :)
     //потому что запрещены regexp-ы
-    public class RegExp
+    public class Template
     {
         private readonly CharType prevCharTemplate;
-        private readonly string regexp;
         private readonly CharType nextCharTemplate;
 
-        public int Length => regexp.Length;
+        public readonly string Lexem;
+        public int Length => Lexem.Length;
 
-        public RegExp(CharType prevCharTemplate, string regexp, CharType nextCharTemplate)
+        public Template(CharType prevCharTemplate, string lexem, CharType nextCharTemplate)
         {
-            if (string.IsNullOrEmpty(regexp))
-                throw new ArgumentException(nameof(regexp));
+            if (string.IsNullOrEmpty(lexem))
+                throw new ArgumentException(nameof(lexem));
 
             this.prevCharTemplate = prevCharTemplate;
-            this.regexp = regexp;
+            this.Lexem = lexem;
             this.nextCharTemplate = nextCharTemplate;
         }
 
         public bool IsMatch(EscapedString str, int startPosition = 0)
         {
-            if ((str.Length - startPosition) < regexp.Length) return false;
-            if (!IsMatch(str, startPosition + regexp.Length, nextCharTemplate)) return false;
+            if ((str.Length - startPosition) < Lexem.Length) return false;
+            if (!IsMatch(str, startPosition + Lexem.Length, nextCharTemplate)) return false;
             if (!IsMatch(str, startPosition - 1, prevCharTemplate)) return false;
-            return str.IsOrdinalEqual(regexp, startPosition);
+            return str.IsOrdinalEqual(Lexem, startPosition);
         }
 
         private bool IsMatch(EscapedString str, int pos, CharType template)
@@ -49,7 +48,6 @@ namespace Markdown.Utility
             return null;
         }
 
-        // CR (krait): А чего бы не добавить сюда prevChar и nextChar?
-        public override string ToString() => regexp;
+        public override string ToString() => $"{prevCharTemplate}{Lexem}{nextCharTemplate}";
     }
 }

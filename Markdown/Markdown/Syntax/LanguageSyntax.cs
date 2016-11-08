@@ -8,6 +8,9 @@ namespace Markdown.Syntax
 {
     public class LanguageSyntax
     {
+        public static readonly string RootTagName = null;
+
+
         private readonly ImmutableDictionary<string, Tag> tags;
         private readonly ImmutableHashSet<string> rootTags;
 
@@ -33,18 +36,15 @@ namespace Markdown.Syntax
             return tags[tag];
         }
 
-        // CR (krait): available
-        public IEnumerable<Tag> GetTagsAvaibleInRoot()
+        public IEnumerable<Tag> GetTagsAvailableInRoot()
         {
             return rootTags.Select(GetTag);
         }
 
-        // CR (krait): currentTag
-        public IEnumerable<Tag> GetAvaibleTags(string nowTag)
+        public IEnumerable<Tag> GetAvaibleTags(string currentTag)
         {
-            // CR (krait): Для имени root-тега где-то была объявлена константа. Надо уж либо её везде использовать, либо её убрать и использовать null.
-            if (nowTag == null) return GetTagsAvaibleInRoot();
-            return tags[nowTag].NestedTags.Select(GetTag);
+            if (currentTag == RootTagName) return GetTagsAvailableInRoot();
+            return tags[currentTag].NestedTags.Select(GetTag);
         }
     }
 }

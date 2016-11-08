@@ -27,7 +27,10 @@ namespace Markdown.Utility
             if ((str.Length - startPosition) < Lexem.Length) return false;
             if (!IsMatch(str, startPosition + Lexem.Length, nextCharTemplate)) return false;
             if (!IsMatch(str, startPosition - 1, prevCharTemplate)) return false;
-            return str.IsOrdinalEqual(Lexem, startPosition);
+            for (int i = 0; i < Length; i++)
+                if (str[i].IsEscaped || str[i + startPosition].Value != Lexem[i])
+                    return false;
+            return true;
         }
 
         private bool IsMatch(EscapedString str, int pos, CharType template)
@@ -37,10 +40,8 @@ namespace Markdown.Utility
             return str[pos].Value.IsMatch(template);
         }
 
-        //TODO: N^2
         public int? Find(EscapedString str, int start)
         {
-            // CR (krait): Правильно стоит тудушка, сделай поиск поэффективнее.
             for (var i = start; i < str.Length; i++)
             {
                 if (IsMatch(str, i)) return i;

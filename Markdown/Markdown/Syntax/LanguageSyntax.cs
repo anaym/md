@@ -25,7 +25,7 @@ namespace Markdown.Syntax
             var notDescribedTags = Alphabet.Except(this.tags.Select(p => p.Key));
             if (notDescribedTags.Count != 0)
             {
-                throw new IncorrectSyntaxException($"Not all tags have been described: {notDescribedTags.SequenceToString()}"); 
+                throw new IncorrectSyntaxException($"Not all tags has been described: {notDescribedTags.SequenceToString()}"); 
             }
         }
 

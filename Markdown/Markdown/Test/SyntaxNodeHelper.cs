@@ -3,10 +3,6 @@ using System.Linq;
 
 namespace Markdown
 {
-    // CR (krait): Это круто, что fluent api, но зачем об этом в саммари писать?
-    /// <summary>
-    /// FluentApi
-    /// </summary>
     internal static class SyntaxNodeHelper
     {
         public static IEnumerable<SyntaxNode> ConnectRaw(this IEnumerable<SyntaxNode> nodes, string raw)

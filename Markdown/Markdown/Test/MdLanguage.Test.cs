@@ -18,14 +18,12 @@ namespace Markdown
             mdLanguage = new MdLanguage();
         }
 
-        // CR (krait): Теперь имена тестов выглядят как 'should correctly rebuild is simple string'.
-
-        [TestCase("a b c d", TestName = "is simple string")]
-        [TestCase("a b __c d__", TestName =  "is string with bold-tag")]
-        [TestCase("a b _c d_ ", TestName = "is string with italic-tag")]
-        [TestCase("a __b _c d_ e__", TestName = "is string with italic-tag in bold-tag")]
-        [TestCase("a _b __c d__ e_", TestName = "is italic-tag and bold-tag permutation string")]
-        public void CorrectlyRebuild(string source)
+        [TestCase("a b c d", TestName = "without tags")]
+        [TestCase("a b __c d__", TestName =  "with bold-tag")]
+        [TestCase("a b _c d_ ", TestName = "with italic-tag")]
+        [TestCase("a __b _c d_ e__", TestName = "with italic-tag in bold-tag")]
+        [TestCase("a _b __c d__ e_", TestName = "with italic-tag and bold-tag permutation string")]
+        public void CorrectlyRebuild_String(string source)
         {
             var tree = mdLanguage.Parse(source);
             var build = mdLanguage.Build(tree);

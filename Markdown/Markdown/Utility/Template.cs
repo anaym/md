@@ -39,9 +39,12 @@ namespace Markdown.Utility
 
         public int? Find(EscapedString str, int start)
         {
-            for (var i = start; i < str.Length; i++)
+            for (int begin = start; 
+                begin >= 0; 
+                begin = str.ParsedString.IndexOf(Lexem, begin, StringComparison.InvariantCulture))
             {
-                if (IsMatch(str, i)) return i;
+                if (IsMatch(str, begin)) return begin;
+                begin += 1;
             }
             return null;
         }

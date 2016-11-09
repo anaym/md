@@ -8,6 +8,7 @@ namespace Markdown.StringParser
     public class EscapedString : IEnumerable<Char>
     {
         private readonly Char[] chars;
+        public readonly string ParsedString;
 
         public EscapedString(string str, char escapeChar)
         {
@@ -17,6 +18,7 @@ namespace Markdown.StringParser
                 .Where(p => p != null)
                 .Select(p => p.Value)
                 .ToArray();
+            ParsedString = string.Join("", chars.Select(c => c.Value));
         }
 
         private static Char? ReadNonEscaped(char c, char escapeChar, out bool escaped)

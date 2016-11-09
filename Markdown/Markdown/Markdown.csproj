@@ -63,11 +63,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Languages\ParseException.cs" />
     <Compile Include="Languages\HtmlLanguage.cs" />
     <Compile Include="Languages\Language.cs" />
     <Compile Include="Languages\ParsingState.cs" />
     <Compile Include="Languages\MdLanguage.cs" />
     <Compile Include="StringParser\Char.cs" />
+    <Compile Include="Syntax\IncorrectSyntaxException.cs" />
+    <Compile Include="Test\HtmlLanguage.Test.cs" />
+    <Compile Include="Test\SyntaxNodeHelper.cs" />
     <Compile Include="Utility\Template.cs" />
     <Compile Include="Utility\CharExtension.cs" />
     <Compile Include="Utility\CharType.cs" />
@@ -86,7 +90,7 @@
     <None Include="packages.config" />
     <None Include="README.md" />
     <None Include="Spec.md" />
-    <Compile Include="Test\ParsedString.Test.cs" />
+    <Compile Include="Test\EscapedString.Test.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,8 +26,7 @@ namespace Markdown.Syntax
             var notDescribedTags = Alphabet.Except(this.tags.Select(p => p.Key));
             if (notDescribedTags.Count != 0)
             {
-                // CR (krait): Загадочное сообщение.
-                throw new InvalidOperationException($"Not all tags describes in as construction: {notDescribedTags.SequenceToString()}"); 
+                throw new IncorrectSyntaxException($"Not all tags has been described: {notDescribedTags.SequenceToString()}"); 
             }
         }
 

@@ -33,14 +33,14 @@ namespace Markdown.StringParser
 
         public int Length => chars.Length;
 
-        public bool IsOrdinalEqual(string other, int start = 0)
+        public bool SubstringOrdinalEqual(string other, int substringStart = 0)
         {
-            if (other.Length > (Length - start)) return false;
+            if (other.Length > (Length - substringStart)) return false;
             
             for (int i = 0; i < other.Length; i++)
             {
-                if (this[i + start].IsEscaped) return false;
-                if (this[i + start].Value != other[i]) return false;
+                if (this[i + substringStart].IsEscaped) return false;
+                if (this[i + substringStart].Value != other[i]) return false;
             }
             return true;
         }

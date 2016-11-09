@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Markdown
 {
@@ -8,6 +9,8 @@ namespace Markdown
         private readonly List<SyntaxNode> nestedNodes;
         public readonly bool IsTag;
         public bool IsRawString => !IsTag;
+
+        public int Size => 1 + NestedNodes.Sum(n => n.Size);
 
         public static SyntaxNode CreateTag(string tag) => new SyntaxNode(tag, true);
         public static SyntaxNode CreateRawString(string rawString) => new SyntaxNode(rawString, false);

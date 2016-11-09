@@ -9,6 +9,8 @@ namespace Markdown.Utility
         Space = 1 << 0,
         Digit = 1 << 1,
         Letter = 1 << 2,
-        Any = Space | Digit | Letter
+        NonSpace = 1 << 3,
+        //Dot = 1 << 4,
+        Any = Space | Digit | Letter | NonSpace
     }
 }

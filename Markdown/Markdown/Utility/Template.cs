@@ -27,10 +27,7 @@ namespace Markdown.Utility
             if ((str.Length - startPosition) < Lexem.Length) return false;
             if (!IsMatch(str, startPosition + Lexem.Length, nextCharTemplate)) return false;
             if (!IsMatch(str, startPosition - 1, prevCharTemplate)) return false;
-            for (int i = 0; i < Length; i++)
-                if (str[i].IsEscaped || str[i + startPosition].Value != Lexem[i])
-                    return false;
-            return true;
+            return str.SubstringOrdinalEqual(Lexem, startPosition);
         }
 
         private bool IsMatch(EscapedString str, int pos, CharType template)

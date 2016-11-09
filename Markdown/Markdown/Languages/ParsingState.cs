@@ -9,11 +9,14 @@ namespace Markdown.Languages
     {
         private readonly LanguageSyntax languageSyntax;
         private readonly Stack<SyntaxNode> tagStack;
-        
+
+        public IEnumerable<string> CurrentOpennedTags => tagStack.Select(n => n.TagName).Where(s => !string.IsNullOrEmpty(s));
+
         public readonly EscapedString String;
         public readonly SyntaxNode Root;
 
         public int Position { get; set; }
+        public bool AllTagClosed => tagStack.Count <= 1;
         public bool IsCompleted => Position >= String.Length;
 
         public SyntaxNode CurrentNode => tagStack.Peek();

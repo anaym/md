@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DLibrary.Enumerations;
+using Markdown.Languages.Exteptions;
 using Markdown.Syntax;
 
 namespace Markdown.Languages
@@ -21,6 +22,8 @@ namespace Markdown.Languages
             {
                 parsingState.Position = ReadNextTag(parsingState);
             }
+            if (!parsingState.AllTagClosed)
+                throw new ParseException($"Not all tags has been closed: {{{string.Join(", ", parsingState.CurrentOpennedTags)}}}");
             return parsingState.Root;
         }
 

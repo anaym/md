@@ -6,7 +6,6 @@ using NUnit.Framework;
 
 namespace Markdown
 {
-    //TODO: нормальные имена для Exception-ов
     [TestFixture]
     public class MdLanguage_Should
     {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using Markdown.Languages;
 using Markdown.Languages.Exteptions;
@@ -18,6 +17,8 @@ namespace Markdown
         {
             mdLanguage = new MdLanguage();
         }
+
+        // CR (krait): Теперь имена тестов выглядят как 'should correctly rebuild is simple string'.
 
         [TestCase("a b c d", TestName = "is simple string")]
         [TestCase("a b __c d__", TestName =  "is string with bold-tag")]

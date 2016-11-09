@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace Markdown
 {
+    // CR (krait): Это круто, что fluent api, но зачем об этом в саммари писать?
     /// <summary>
     /// FluentApi
     /// </summary>

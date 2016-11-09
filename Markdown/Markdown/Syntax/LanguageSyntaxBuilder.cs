@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Markdown.Syntax
 {
+    // CR (krait): Почему билдер остался IEnumerable?
     public class LanguageSyntaxBuilder : IEnumerable<TagBuilder>
     {
         public readonly HashSet<TagBuilder> Tags;

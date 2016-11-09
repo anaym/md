@@ -40,7 +40,7 @@ namespace Markdown
         }
 
         [Test]
-        public void NotParse_WnenBoldAndItalicIsSingletone()
+        public void NotParse_WhenThereIsNoClosingTag()
         {
             var tree = htmlLanguage.Parse("<em>a <strong>b");
             tree.NestedNodes.ShouldAllBeEquivalentTo(new [] {SyntaxNode.CreateRawString("<em>a <strong>b") }, o => o.WithStrictOrdering());
@@ -49,7 +49,7 @@ namespace Markdown
 
         #region Correct Parse
         [Test]
-        public void CorrectParse_StringWithItalic()
+        public void CorrectlyParse_StringWithItalic()
         {
             var md = "a <em>b c d</em> e";
             var tree = htmlLanguage.Parse(md);
@@ -61,7 +61,7 @@ namespace Markdown
         }
 
         [Test]
-        public void CorrectParse_StringWithBold()
+        public void CorrectlyParse_StringWithBold()
         {
             var md = "a <strong>b c d</strong> e";
             var tree = htmlLanguage.Parse(md);
@@ -73,7 +73,7 @@ namespace Markdown
         }
 
         [Test]
-        public void CorrectParse_StringWithItalicInBold()
+        public void CorrectlyParse_StringWithItalicInBold()
         {
             var md = "c <strong>a <em>b 1 2</em> e</strong> d";
             var tree = htmlLanguage.Parse(md);
@@ -89,7 +89,7 @@ namespace Markdown
         }
         
         [Test]
-        public void CorrectParse_StringWithItalicAndBold()
+        public void CorrectlyParse_StringWithItalicAndBold()
         {
             var md = "c <strong>a b 1</strong> <em>2 e</em> d";
             var tree = htmlLanguage.Parse(md);

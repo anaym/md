@@ -8,8 +8,6 @@ using Markdown.Utility;
 
 namespace Markdown
 {
-
-
     class Program
     {
         public static IEnumerable<string> GetAllNamespaces(string nameSpaceFilter)

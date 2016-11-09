@@ -12,7 +12,7 @@ namespace Markdown.Test
         [TestCase(@"a \b cdefg", "a b cdefg", TestName = "with one escaped char")]
         [TestCase(@"a \b cd\efg", "a b cdefg", TestName = "with two escaped chars")]
         [TestCase(@"a \b cd\efg \\", @"a b cdefg \", TestName = "with escape of escape char")]
-        public void CorrectParseEscapedLine_WhenString(string source, string expected)
+        public void CorrectlyParseEscapedLine_WhenString(string source, string expected)
         {
             var parsed = new EscapedString(source, '\\');
             parsed.ToString().Should().Be(expected);

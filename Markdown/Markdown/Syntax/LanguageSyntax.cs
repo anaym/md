@@ -25,7 +25,7 @@ namespace Markdown.Syntax
             var notDescribedTags = Alphabet.Except(this.tags.Select(p => p.Key));
             if (notDescribedTags.Count != 0)
             {
-                throw new IncorrectSyntaxException($"Not all tags has been described: {notDescribedTags.SequenceToString()}"); 
+                throw new IncorrectSyntaxException($"Not all tags have been described: {notDescribedTags.SequenceToString()}"); 
             }
         }
 
@@ -39,7 +39,7 @@ namespace Markdown.Syntax
             return rootTags.Select(GetTag);
         }
 
-        public IEnumerable<Tag> GetAvaibleTags(string currentTag)
+        public IEnumerable<Tag> GetAvailableTags(string currentTag)
         {
             if (currentTag == RootTagName) return GetTagsAvailableInRoot();
             return tags[currentTag].NestedTags.Select(GetTag);

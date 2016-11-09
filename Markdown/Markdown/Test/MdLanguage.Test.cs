@@ -80,14 +80,14 @@ namespace Markdown
         }
 
         [Test]
-        public void NotParse_WnenBoldAndItalicIsSingletone()
+        public void NotParse_WhenThereIsNoClosingTag()
         {
             var tree = mdLanguage.Parse("__a _b");
             tree.NestedNodes.ShouldAllBeEquivalentTo(new [] {SyntaxNode.CreateRawString("__a _b")}, o => o.WithStrictOrdering());
         }
 
         [Test]
-        public void ThrowsWhen_StringWith_OverlayTags()
+        public void ThrowWhen_StringWith_OverlayTags()
         {
             Assert.Throws<ParseException>(() => mdLanguage.Parse("__a _b c__ d_"));
         }
@@ -95,7 +95,7 @@ namespace Markdown
 
         #region Correct Parse
         [Test]
-        public void CorrectParse_StringWithItalic()
+        public void CorrectlyParse_StringWithItalic()
         {
             var md = "a _b c d_ e";
             var tree = mdLanguage.Parse(md);
@@ -107,7 +107,7 @@ namespace Markdown
         }
 
         [Test]
-        public void CorrectParse_StringWithBold()
+        public void CorrectlyParse_StringWithBold()
         {
             var md = "a __b c d__ e";
             var tree = mdLanguage.Parse(md);
@@ -119,7 +119,7 @@ namespace Markdown
         }
 
         [Test]
-        public void CorrectParse_StringWithItalicInBold()
+        public void CorrectlyParse_StringWithItalicInBold()
         {
             var md = "c __a _b 1 2_ e__ d";
             var tree = mdLanguage.Parse(md);
@@ -135,7 +135,7 @@ namespace Markdown
         }
         
         [Test]
-        public void CorrectParse_StringWithItalicAndBold()
+        public void CorrectlyParse_StringWithItalicAndBold()
         {
             var md = "c __a b 1__ _2 e_ d";
             var tree = mdLanguage.Parse(md);

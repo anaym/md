@@ -21,8 +21,8 @@ namespace Markdown.Languages
             {
                 parsingState.Position = ReadNextTag(parsingState);
             }
-            if (!parsingState.AllTagClosed)
-                throw new ParseException($"Not all tags has been closed: {{{string.Join(", ", parsingState.CurrentOpennedTags)}}}");
+            if (!parsingState.AllTagsClosed)
+                throw new ParseException($"Not all tags have been closed: {{{string.Join(", ", parsingState.CurrentOpenedTags)}}}");
             return parsingState.Root;
         }
 
@@ -36,7 +36,7 @@ namespace Markdown.Languages
             return pos.Value;
         }
 
-        private int? ReadEndOfCurrentTag(ParsingState parsingState)
+        private static int? ReadEndOfCurrentTag(ParsingState parsingState)
         {
             if (!parsingState.IsNowTagClose)
                 return null;
@@ -46,10 +46,10 @@ namespace Markdown.Languages
             return newIndex;
         }
 
-        private int? ReadBeginOfNestedTag(ParsingState parsingState)
+        private static int? ReadBeginOfNestedTag(ParsingState parsingState)
         {
             var next = parsingState
-                .CurrentAvaibleTags
+                .CurrentAvailableTags
                 .FirstOrDefault(c => c.IsAt(parsingState.String, parsingState.Position));
 
             if (next == null)
@@ -59,7 +59,7 @@ namespace Markdown.Languages
             return parsingState.Position + parsingState.CurrentTag.Begin.Length;
         }
 
-        private int? ReadRawText(ParsingState parsingState)
+        private static int? ReadRawText(ParsingState parsingState)
         {
             var end = FindEndOfRawText(parsingState);
             var raw = parsingState.String.ToString().Substring(parsingState.Position, end - parsingState.Position);
@@ -67,10 +67,10 @@ namespace Markdown.Languages
             return end;
         }
 
-        private int FindEndOfRawText(ParsingState parsingState)
+        private static int FindEndOfRawText(ParsingState parsingState)
         {
             var beginNested = parsingState
-                .CurrentAvaibleTags
+                .CurrentAvailableTags
                 .Select(c => Tuple.Create(c, c.Begin.Find(parsingState.String, parsingState.Position)))
                 .Where(p => p.Item2 != null)
                 .OrderBy(p => p.Item2.Value)

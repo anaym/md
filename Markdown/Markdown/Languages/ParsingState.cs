@@ -10,21 +10,22 @@ namespace Markdown.Languages
         private readonly LanguageSyntax languageSyntax;
         private readonly Stack<SyntaxNode> tagStack;
 
-        public IEnumerable<string> CurrentOpennedTags => tagStack.Select(n => n.TagName).Where(s => !string.IsNullOrEmpty(s));
+        public IEnumerable<string> CurrentOpenedTags => tagStack.Select(n => n.TagName).Where(s => !string.IsNullOrEmpty(s));
 
         public readonly EscapedString String;
         public readonly SyntaxNode Root;
 
         public int Position { get; set; }
-        public bool AllTagClosed => tagStack.Count <= 1;
+        public bool AllTagsClosed => tagStack.Count <= 1;
         public bool IsCompleted => Position >= String.Length;
 
         public SyntaxNode CurrentNode => tagStack.Peek();
         public string CurrentTagName => CurrentNode.TagName;
         public Tag CurrentTag
             => CurrentTagName == LanguageSyntax.RootTagName ? null : languageSyntax.GetTag(CurrentTagName);
-        public IEnumerable<Tag> CurrentAvaibleTags
-            => languageSyntax.GetAvaibleTags(CurrentTagName);
+        
+        public IEnumerable<Tag> CurrentAvailableTags
+            => languageSyntax.GetAvailableTags(CurrentTagName);
 
         public bool IsNowTagClose
             => CurrentTagName != LanguageSyntax.RootTagName && CurrentTag.End.IsMatch(String, Position);

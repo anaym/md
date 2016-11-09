@@ -6,8 +6,9 @@ namespace Markdown.StringParser
 {
     public class EscapedString : IEnumerable<Char>
     {
-        private readonly Char[] chars;
         public readonly string ParsedString;
+
+        private readonly Char[] chars;
 
         public EscapedString(string str, char escapeChar)
         {

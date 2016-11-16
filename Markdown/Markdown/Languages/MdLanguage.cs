@@ -21,6 +21,23 @@ namespace Markdown.Languages
                 End = new Template(CharType.Digit | CharType.Letter, "_", CharType.Space),
                 IsRootableTag = true
             };
+
+            syntax += new TagBuilder("url.name")
+            {
+                Begin = new Template(CharType.Space, "[", CharType.Any),
+                End = new Template(CharType.Any, "]", CharType.LeftBracket),
+                IsRootableTag = true,
+                GroupIndex = 0,
+                GroupName = "url"
+            };
+            syntax += new TagBuilder("url.address")
+            {
+                Begin = new Template(CharType.RightSquareBracket, "(", CharType.Any),
+                End = new Template(CharType.Any, ")", CharType.Space),
+                IsRootableTag = true,
+                GroupIndex = 1,
+                GroupName = "url"
+            };
             return syntax.Build();
         }
 

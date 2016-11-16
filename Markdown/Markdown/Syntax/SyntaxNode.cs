@@ -17,6 +17,7 @@ namespace Markdown
 
         public IEnumerable<SyntaxNode> NestedNodes => nestedNodes;
         public void AddNestedNode(SyntaxNode node) => nestedNodes.Add(node);
+        public void AddManyNestedNode(IEnumerable<SyntaxNode> node) => nestedNodes.AddRange(node);
 
         public SyntaxNode(string tagName, bool isTag)
         {

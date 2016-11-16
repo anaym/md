@@ -14,7 +14,7 @@ namespace Markdown.Utility
 
         public Template(CharType prevCharTemplate, string lexem, CharType nextCharTemplate)
         {
-            if (string.IsNullOrEmpty(lexem))
+            if (lexem == null) // TODO: old: if (string.IsNullOrEmpty(lexem))
                 throw new ArgumentException(nameof(lexem));
 
             this.prevCharTemplate = prevCharTemplate;

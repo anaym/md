@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Languages\GroupingHelper.cs" />
     <Compile Include="Languages\ParseException.cs" />
     <Compile Include="Languages\HtmlLanguage.cs" />
     <Compile Include="Languages\Language.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Syntax\IncorrectSyntaxException.cs" />
     <Compile Include="Test\HtmlLanguage.Test.cs" />
     <Compile Include="Test\SyntaxNodeHelper.cs" />
+    <Compile Include="Utility\LinqExtensions.cs" />
     <Compile Include="Utility\Template.cs" />
     <Compile Include="Utility\CharExtension.cs" />
     <Compile Include="Utility\CharType.cs" />

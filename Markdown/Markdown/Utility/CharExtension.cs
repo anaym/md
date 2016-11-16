@@ -12,6 +12,11 @@ namespace Markdown.Utility
             if (type.HasFlag(CharType.Digit)) if (Char.IsDigit(c)) return true;
             if (type.HasFlag(CharType.Letter)) if (Char.IsLetter(c)) return true;
 
+            if (type.HasFlag(CharType.LeftBracket)) if (c == '(') return true;
+            if (type.HasFlag(CharType.RightBracket)) if (c == ')') return true;
+            if (type.HasFlag(CharType.LeftSquareBracket)) if (c == '[') return true;
+            if (type.HasFlag(CharType.RightSquareBracket)) if (c == ']') return true;
+
             //if (type.HasFlag(CharType.Dot)) if (c == '.') return true;
             return false;
         }

@@ -21,6 +21,23 @@ namespace Markdown.Languages
                 End = new Template(CharType.Any, "</em>", CharType.Any),
                 IsRootableTag = true
             };
+
+            syntax += new TagBuilder("url.address")
+            {
+                Begin = new Template(CharType.Any, "<a href=\"", CharType.Any),
+                End = new Template(CharType.Any, "\">", CharType.Any), //TODO: могут быть проблемы при html-парсинге. Но их без нормальных регэкспов решать нехочу. Да и при корректном юрл все норм
+                IsRootableTag = true,
+                GroupIndex = 0,
+                GroupName = "url"
+            };
+            syntax += new TagBuilder("url.name")
+            {
+                Begin = new Template(CharType.Any, "", CharType.Any), //TODO: а вот здесь серьезные проблемы при парсинге. Хз, считает ли он начало тега нудевой длины
+                End = new Template(CharType.Any, "</a>", CharType.Any),
+                IsRootableTag = true,
+                GroupIndex = 1,
+                GroupName = "url"
+            };
             return syntax.Build();
         }
 

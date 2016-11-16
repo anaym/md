@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Markdown.Languages.Exteptions;
 using Markdown.Syntax;
+using Markdown.Utility;
 
 namespace Markdown.Languages
 {
@@ -25,6 +27,17 @@ namespace Markdown.Languages
                 throw new ParseException($"Not all tags have been closed: {{{string.Join(", ", parsingState.CurrentOpenedTags)}}}");
             return parsingState.Root;
         }
+        /*
+        private SyntaxNode BuildIncomletGroups(SyntaxNode node)
+        {
+            if (node.IsRawString) return node;
+            var groups = node.NestedNodes.CutToGroups(Syntax);
+            var result = new List<SyntaxNode>();
+            foreach (var group in groups)
+            {
+                if (group.)
+            }
+        }*/
 
         private int ReadNextTag(ParsingState parsingState)
         {
@@ -94,9 +107,9 @@ namespace Markdown.Languages
             if (tree.IsRawString)
                 return tree.TagName;
             if (tree.TagName == null)
-                return string.Join("", tree.NestedNodes.Select(Build));
+                return string.Join("", tree.NestedNodes.CutToGroups(Syntax).OrderInGroups(Syntax).SelectMany(g => g.Select(Build)));
             var construction = Syntax.GetTag(tree.TagName);
-            return construction.Begin.Lexem + string.Join("", tree.NestedNodes.Select(Build)) + construction.End.Lexem;
+            return construction.Begin.Lexem + string.Join("", tree.NestedNodes.CutToGroups(Syntax).OrderInGroups(Syntax).SelectMany(g => g.Select(Build))) + construction.End.Lexem;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Markdown.StringParser;
 using Markdown.Utility;
@@ -12,6 +13,8 @@ namespace Markdown.Syntax
         public Template Begin { get; }
         public Template End { get; }
         public IEnumerable<string> NestedTags => nestedTags;
+        public string GroupName { get; }
+        public int GroupIndex { get; }
 
         private readonly List<string> nestedTags;
 
@@ -22,7 +25,7 @@ namespace Markdown.Syntax
         }
 
         //потому что запрещены regexp-ы
-        public Tag(string name, Template begin, Template end, IEnumerable<string> nestedTags)
+        public Tag(string name, Template begin, Template end, IEnumerable<string> nestedTags = null, int groupIndex = 0, string groupName = null)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (begin == null) throw new ArgumentNullException(nameof(begin));
@@ -32,7 +35,9 @@ namespace Markdown.Syntax
             Name = name;
             Begin = begin;
             End = end;
-            this.nestedTags = nestedTags.ToList();
+            GroupIndex = groupIndex;
+            this.nestedTags = nestedTags?.ToList() ?? new List<string>();
+            GroupName = groupName;
         }
     }
 }

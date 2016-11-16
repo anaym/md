@@ -17,17 +17,26 @@ namespace Markdown
             mdLanguage = new MdLanguage();
         }
 
+        #region Test Cases
         [TestCase("a b c d", TestName = "without tags")]
-        [TestCase("a b __c d__", TestName =  "with bold-tag")]
+        [TestCase("a b __c d__", TestName = "with bold-tag")]
         [TestCase("a b _c d_ ", TestName = "with italic-tag")]
         [TestCase("a __b _c d_ e__", TestName = "with italic-tag in bold-tag")]
         [TestCase("a _b __c d__ e_", TestName = "with italic-tag and bold-tag permutation string")]
+
+        [TestCase("a [a](b)", TestName = "with link")]
+        [TestCase("a [a](b) [c](d)", TestName = "with two links")]
+        [TestCase("a [a]()", TestName = "with link without address")]
+        [TestCase("a [](b)", TestName = "with link without name")]
+        #endregion
         public void CorrectlyRebuild_String(string source)
         {
             var tree = mdLanguage.Parse(source);
             var build = mdLanguage.Build(tree);
             build.Should().Be(source);
         }
+
+        #region Bold && Italic
 
         #region Not Parse Incorrect Strings
         [TestCase(@"\_ab\_", TestName = "is string with escaped tag")]
@@ -144,6 +153,76 @@ namespace Markdown
                 .ConnectRaw(" d");
             tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
         }
+        #endregion
+
+        #endregion
+
+        #region URL
+
+        #region Not Parse Incorrect Strings
+
+        [TestCase(@"a](b)", TestName = "string without tag-name left bracket")]
+        [TestCase(@"[a(b)", TestName = "string without tag-name right bracket")]
+        [TestCase(@"[a]b)", TestName = "string without tag-address left bracket")]
+        [TestCase(@"[a](b", TestName = "string without tag-address right bracket")]
+        [TestCase(@"[](b)", TestName = "string without tag-name")]
+        public void NotParseUrl_When(string mdString)
+        {
+            var tree = mdLanguage.Parse(mdString);
+            tree.Size.Should().Be(2);
+            var raw = tree.NestedNodes.First();
+            raw.IsRawString.Should().BeTrue();
+        }
+
+        #endregion
+
+        #region CorrectParse
+
+        [Test]
+        public void CorrectlyParse_StringWithUrl_WhenUrlContinsNameAndAddress()
+        {
+            var md = "a [name](address) e";
+            var tree = mdLanguage.Parse(md);
+            var expected = Enumerable.Empty<SyntaxNode>()
+                .ConnectRaw("a ")
+                .ConnectTag("url.name", SyntaxNode.CreateRawString("name"))
+                .ConnectTag("url.address", SyntaxNode.CreateRawString("address"))
+                .ConnectRaw(" e");
+            tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
+            var res = new HtmlLanguage().Build(tree);
+        }
+
+        [Test]
+        public void CorrectlyParse_StringWithUrl_WhenUrlContinsOnlyName()
+        {
+            var md = "a [name]() e";
+            var tree = mdLanguage.Parse(md);
+            var expected = Enumerable.Empty<SyntaxNode>()
+                .ConnectRaw("a ")
+                .ConnectTag("url.name", SyntaxNode.CreateRawString("name"))
+                .ConnectTag("url.address", Enumerable.Empty<SyntaxNode>())
+                .ConnectRaw(" e");
+            tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
+        }
+
+        [Test]
+        public void CorrectlyParse_StringWithTwoUrls()
+        {
+            var md = "a [n1](a1) [n2](a2) e";
+            var tree = mdLanguage.Parse(md);
+            var expected = Enumerable.Empty<SyntaxNode>()
+                .ConnectRaw("a ")
+                .ConnectTag("url.name", SyntaxNode.CreateRawString("n1"))
+                .ConnectTag("url.address", SyntaxNode.CreateRawString("a1"))
+                .ConnectRaw(" ")
+                .ConnectTag("url.name", SyntaxNode.CreateRawString("n2"))
+                .ConnectTag("url.address", SyntaxNode.CreateRawString("a2"))
+                .ConnectRaw(" e");
+            tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
+        }
+
+        #endregion
+
         #endregion
     }
 }

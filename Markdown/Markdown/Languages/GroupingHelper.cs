@@ -1,23 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Security.AccessControl;
+using System.Xml;
 using Markdown.Syntax;
+using Markdown.Utility;
+using Utility.Linq;
 
 namespace Markdown.Languages
 {
     internal static class GroupingHelper
     {
-        public static SyntaxNode BuildIncomletGroups(this SyntaxNode root, Language language)
+        public static SyntaxNode RevertParseForIncompleteGroups(this SyntaxNode root, Language language)
         {
             if (root.IsRawString) return root;
             var newRoot = SyntaxNode.CreateTag(root.TagName);
-            var nested = root.NestedNodes.Select(n => n.BuildIncomletGroups(language)).ToList();
-            var processed = nested.CutToGroups(language.Syntax).BuildIncomletGroups(language).ConcatRaw();
+            var nested = root.NestedNodes.Select(n => n.RevertParseForIncompleteGroups(language)).ToList();
+            var processed = nested.RevertParseForIncompleteGroups(language).ConcatRaw();
             newRoot.AddManyNestedNode(processed.SelectMany(a => a));
             return newRoot;
         }
 
-        public static IEnumerable<IReadOnlyCollection<SyntaxNode>> ConcatRaw(this IEnumerable<IReadOnlyList<SyntaxNode>> groups)
+        public static IEnumerable<SyntaxNode> OrderTagsInGroups(this IEnumerable<SyntaxNode> nodes, LanguageSyntax syntax)
+        {
+            return nodes.CutToGroups(syntax).OrderInGroups(syntax).SelectMany(g => g);
+        }
+
+        private static IEnumerable<IReadOnlyCollection<SyntaxNode>> ConcatRaw(this IEnumerable<IReadOnlyList<SyntaxNode>> groups)
         {
             string buffer = null;
             foreach (var group in groups)
@@ -37,95 +47,75 @@ namespace Markdown.Languages
             if (buffer != null) yield return new List<SyntaxNode> { SyntaxNode.CreateRawString(buffer) };
         }
 
-        public static IEnumerable<IReadOnlyList<SyntaxNode>> BuildIncomletGroups(this IEnumerable<IReadOnlyList<SyntaxNode>> groups, Language language)
+        private static IEnumerable<IReadOnlyList<SyntaxNode>> RevertParseForIncompleteGroups(this IEnumerable<SyntaxNode> tags, Language language)
         {
+            var groups = tags.CutToGroups(language.Syntax).ToList();
             foreach (var group in groups)
             {
-                if (group.IsGroup(language.Syntax))
+                if (group.First().IsRawString || language.Syntax.GetTag(group.First().TagName).GroupName == null)
                 {
-                    var groupName = language.Syntax.GetTag(group.First().TagName).GroupName;
-                    var expected = language.Syntax.GetTagInGroup(groupName).ToList();
-                    var buffer = new List<SyntaxNode>();
                     foreach (var node in group)
                     {
-                        if (expected.Count == 0)
-                        {
-                            yield return buffer;
-                            buffer = new List<SyntaxNode>();
-                            expected = language.Syntax.GetTagInGroup(groupName).ToList();
-                        }
-                        buffer.Add(node);
-                        if (node.TagName != expected.First().Name)
-                        {
-                            var tree = SyntaxNode.CreateTag(null);
-                            tree.AddManyNestedNode(buffer);
-                            var str = SyntaxNode.CreateRawString(language.Build(tree));
-                            yield return new List<SyntaxNode> {str};
-                            buffer = new List<SyntaxNode>();
-                            expected = language.Syntax.GetTagInGroup(groupName).ToList();
-                        }
-                        else
-                        {
-                            expected.RemoveAt(0);
-                        }
-                    }
-                    if (expected.Count == 0)
-                        yield return buffer;
-                    else
-                    {
-                        var tree = SyntaxNode.CreateTag(null);
-                        tree.AddManyNestedNode(buffer);
-                        var str = SyntaxNode.CreateRawString(language.Build(tree));
-                        yield return new List<SyntaxNode> { str };
+                        yield return new List<SyntaxNode> {node};
                     }
                 }
                 else
                 {
-                    yield return group;
+                    var groupName = language.Syntax.GetTag(group.First().TagName).GroupName;
+                    var expected = language.Syntax.GetTagInGroup(groupName);
+                    if (group.Count != expected.Count())
+                    {
+                        var str = group.Select(n => language.Build(n)).SequenceToString("", "", "");
+                        yield return new List<SyntaxNode> {SyntaxNode.CreateRawString(str)};
+                    }
+                    else
+                    {
+                        yield return group;
+                    }
                 }
             }
         }
 
-        public static IEnumerable<IEnumerable<SyntaxNode>> OrderInGroups(this IEnumerable<IReadOnlyList<SyntaxNode>> groups, LanguageSyntax syntax)
+        private static IEnumerable<IEnumerable<SyntaxNode>> OrderInGroups(this IEnumerable<IReadOnlyList<SyntaxNode>> groups, LanguageSyntax syntax)
         {
             return groups.Select(group => !group.IsGroup(syntax) ? group : group.OrderBy(n => syntax.GetTag(n.TagName).GroupIndex) as IEnumerable<SyntaxNode>);
         }
 
-        public static bool IsGroup(this IReadOnlyList<SyntaxNode> nodes, LanguageSyntax syntax)
+        private static bool IsGroup(this IReadOnlyList<SyntaxNode> nodes, LanguageSyntax syntax)
         {
             return nodes.First().IsTag && syntax.GetTag(nodes.First().TagName).GroupName != null;
         }
 
-        public static IEnumerable<IReadOnlyList<SyntaxNode>> CutToGroups(this IEnumerable<SyntaxNode> nodes, LanguageSyntax syntax)
+        private static IEnumerable<IReadOnlyList<SyntaxNode>> CutToGroups(this IEnumerable<SyntaxNode> nodes, LanguageSyntax syntax)
         {
-            string currentGroup = null;
-            var result = new List<List<SyntaxNode>>();
-            foreach (var node in nodes)
-            {
-                var group = node.IsTag ? syntax.GetTag(node.TagName).GroupName : null;
-                if (node.IsRawString || group != currentGroup)
-                {
-                    SaveResult(result, node, false);
-                }
-                else
-                {
-                    SaveResult(result, node, currentGroup != null);   
-                }
-                currentGroup = group;
-            }
+            return nodes
+                .GroupWithSaveOrderBy(n => n.IsRawString ? null : syntax.GetTag(n.TagName).GroupName)
+                .Select(g => g.ToList())
+                .SelectMany(g => g.CutToFullGroups(syntax));
+        }
+
+        private static IEnumerable<IReadOnlyList<SyntaxNode>> CutToFullGroups(this List<SyntaxNode> group, LanguageSyntax syntax)
+        {
+            if (group.Count == 0) return new List<IReadOnlyList<SyntaxNode>>();
+            var groupName = group.First().IsRawString ? null : syntax.GetTag(group.First().TagName).GroupName;
+            if (groupName == null) return new[] { group.ToList() };
+            var expected = syntax.GetTagInGroup(groupName).Select(t => t.Name).ToList();
+            var tags = group.ToList();
+            if (tags.Count < expected.Count) return new[] { group.ToList() };
+
+            var isFullCombination = tags.IsFullCombination(expected);
+            var length = isFullCombination ? expected.Count : 1;
+
+            var result = new List<IReadOnlyList<SyntaxNode>>();
+            result.Add(tags.SubEnumerable(0, length).ToList());
+            result.AddRange(tags.SubEnumerable(length, tags.Count - length).ToList().CutToFullGroups(syntax));
+
             return result;
         }
 
-        private static void SaveResult(List<List<SyntaxNode>> result, SyntaxNode current, bool append)
+        private static bool IsFullCombination(this IEnumerable<SyntaxNode> nodes, IEnumerable<string> expectedTags)
         {
-            if (!append)
-            {
-                result.Add(new List<SyntaxNode> {current});
-            }
-            else
-            {
-                result.Last().Add(current);
-            }
+            return nodes.Zip(expectedTags, (a, b) => a.IsTag && a.TagName == b).All(p => p);
         }
     }
 }

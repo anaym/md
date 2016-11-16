@@ -30,6 +30,8 @@ namespace Markdown.Utility
             return str.SubstringOrdinalEqual(Lexem, startPosition);
         }
 
+        // CR: Private methods should be after public
+        // CR: CharType template? Doesn't seem right
         private bool IsMatch(EscapedString str, int pos, CharType template)
         {
             if (pos < 0 || pos >= str.Length) return true;
@@ -39,6 +41,9 @@ namespace Markdown.Utility
 
         public int? Find(EscapedString str, int start)
         {
+            // Nit: Space at the end of lines
+            // CR: Looks awful, can be rewritten to be much nicer (without
+            // changing anything in the login, think about it).
             for (int begin = start; 
                 begin >= 0; 
                 begin = str.ParsedString.IndexOf(Lexem, begin, StringComparison.InvariantCulture))

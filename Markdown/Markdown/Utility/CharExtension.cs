@@ -19,6 +19,7 @@ namespace Markdown.Utility
             if (type.HasFlag(CharType.LeftSquareBracket)) if (c == '[') return true;
             if (type.HasFlag(CharType.RightSquareBracket)) if (c == ']') return true;
 
+            // CR: Don't leave commented code in the repo
             //if (type.HasFlag(CharType.Dot)) if (c == '.') return true;
             return false;
         }

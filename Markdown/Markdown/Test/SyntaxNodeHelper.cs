@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+// CR: Be consistent about namespace names
 namespace Markdown
 {
     internal static class SyntaxNodeHelper

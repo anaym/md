@@ -4,6 +4,7 @@ using Markdown.Languages;
 using Markdown.Languages.Exteptions;
 using NUnit.Framework;
 
+// CR: Be consistent about namespace names
 namespace Markdown
 {
     [TestFixture]

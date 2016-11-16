@@ -19,7 +19,7 @@ namespace Markdown.Syntax
         public readonly ImmutableHashSet<string> Groups;
 
 
-        public LanguageSyntax(IEnumerable<string> rootTags, IEnumerable<Tag> tags,  char escapeChar)
+        public LanguageSyntax(IEnumerable<string> rootTags, IEnumerable<Tag> tags, char escapeChar)
         {
             EscapeChar = escapeChar;
             this.rootTags = rootTags.ToImmutableHashSet();

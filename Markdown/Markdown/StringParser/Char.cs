@@ -1,5 +1,6 @@
 ﻿namespace Markdown.StringParser
 {
+    // CR: Bad name
     public struct Char
     {
         public readonly char Value;

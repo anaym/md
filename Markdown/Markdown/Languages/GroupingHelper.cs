@@ -7,6 +7,7 @@ using System.Xml;
 using Markdown.Syntax;
 using Markdown.Utility;
 using Utility.Linq;
+// CR: Unused references ^^^^
 
 namespace Markdown.Languages
 {

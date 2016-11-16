@@ -8,6 +8,7 @@ using Markdown.Utility;
 
 namespace Markdown
 {
+    // CR: If you don't use it, delete it
     class Program
     {
         static void Main(string[] args)

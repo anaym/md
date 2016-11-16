@@ -3,6 +3,7 @@ using FluentAssertions;
 using Markdown.Languages;
 using NUnit.Framework;
 
+// CR: Be consistent about namespace names
 namespace Markdown
 {
     [TestFixture]

@@ -15,6 +15,7 @@ namespace Markdown.Utility
         RightBracket = 1 << 6,          //)
         LeftSquareBracket = 1 << 7,     //[
         RightSquareBracket = 1 << 8,    //]
+        // CR: Don't leave commented code in the repo
         //Dot = 1 << 4,
         Any = Space | Digit | Letter | NonSpace
     }

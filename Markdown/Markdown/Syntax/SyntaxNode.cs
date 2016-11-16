@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+// CR: Be consistent about namespace names
 namespace Markdown
 {
     public class SyntaxNode
@@ -21,6 +22,7 @@ namespace Markdown
 
         public SyntaxNode(string tagName, bool isTag)
         {
+            // CR: Be consistent about using/not using this.
             this.TagName = tagName;
             IsTag = isTag;
             nestedNodes = new List<SyntaxNode>();

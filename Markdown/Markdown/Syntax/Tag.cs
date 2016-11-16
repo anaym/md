@@ -25,6 +25,7 @@ namespace Markdown.Syntax
         }
 
         //потому что запрещены regexp-ы
+        // CR: Long line, reformat
         public Tag(string name, Template begin, Template end, IEnumerable<string> nestedTags = null, int groupIndex = 0, string groupName = null)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));

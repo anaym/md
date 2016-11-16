@@ -71,6 +71,9 @@ namespace Markdown.Languages
 
         private static int FindEndOfRawText(ParsingState parsingState)
         {
+            // CR: Never ever-ever use tuples. E.g. here you can use anonymus
+            // objects. Also LINQ is only making this piece of code worse.
+            // Try rewriting it in a more readable way
             var beginNested = parsingState
                 .CurrentAvailableTags
                 .Select(c => Tuple.Create(c, c.Begin.Find(parsingState.String, parsingState.Position)))
@@ -79,18 +82,21 @@ namespace Markdown.Languages
                 .FirstOrDefault(p => p.Item1.IsAt(parsingState.String, p.Item2.Value))
                 ?.Item2;
 
+            // CR: 170 chars line is too much, try to stick to 130
             var endNow = parsingState.CurrentTagName == LanguageSyntax.RootTagName ? null : parsingState.CurrentTag.End.Find(parsingState.String, parsingState.Position);
 
             if (endNow == null)
             {
                 return beginNested ?? parsingState.String.Length;
             }
+            // Nit: Redundant else
             else
             {
                 return beginNested == null ? endNow.Value : Math.Min(endNow.Value, beginNested.Value);
             }
         }
 
+        // CR: Public methods should be before private ones
         public string Build(SyntaxNode tree)
         {
             if (tree.IsRawString)
@@ -98,6 +104,7 @@ namespace Markdown.Languages
             if (tree.TagName == null)
                 return string.Join("", tree.NestedNodes.OrderTagsInGroups(Syntax).Select(Build));
             var construction = Syntax.GetTag(tree.TagName);
+            // CR: Extract variable
             return construction.Begin.Lexem + string.Join("", tree.NestedNodes.OrderTagsInGroups(Syntax).Select(Build)) + construction.End.Lexem;
         }
     }

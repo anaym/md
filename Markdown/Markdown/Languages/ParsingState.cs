@@ -23,7 +23,7 @@ namespace Markdown.Languages
         public string CurrentTagName => CurrentNode.TagName;
         public Tag CurrentTag
             => CurrentTagName == LanguageSyntax.RootTagName ? null : languageSyntax.GetTag(CurrentTagName);
-        
+
         public IEnumerable<Tag> CurrentAvailableTags
             => languageSyntax.GetAvailableTags(CurrentTagName);
 

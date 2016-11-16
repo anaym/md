@@ -14,6 +14,7 @@ namespace Markdown.Syntax
         public int GroupIndex { get; set; }
         public bool IsRootableTag;
 
+        // CR: Unused parameter, delete if it's really unused
         public TagBuilder(string tagName, Template begin, Template end, IEnumerable<string> nestedTags, int groupIndex, string groupName)
         {
             TagName = tagName;

@@ -24,8 +24,8 @@ namespace Markdown.Languages
 
             syntax += new TagBuilder("url.name")
             {
-                Begin = new Template(CharType.Space, "[", CharType.Any),
-                End = new Template(CharType.Any, "]", CharType.LeftBracket),
+                Begin = new Template(CharType.Space, "[", CharType.Inverse | CharType.RightSquareBracket),
+                End = new Template(CharType.LeftSquareBracket | CharType.Inverse, "]", CharType.LeftBracket),
                 IsRootableTag = true,
                 GroupIndex = 0,
                 GroupName = "url"

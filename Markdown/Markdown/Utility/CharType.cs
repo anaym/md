@@ -6,14 +6,15 @@ namespace Markdown.Utility
     [Flags]
     public enum CharType
     {
-        Space = 1 << 0,
-        Digit = 1 << 1,
-        Letter = 1 << 2,
-        NonSpace = 1 << 3,
-        LeftBracket = 1 << 4,           //(
-        RightBracket = 1 << 5,          //)
-        LeftSquareBracket = 1 << 6,     //[
-        RightSquareBracket = 1 << 6,    //]
+        Inverse = 1,
+        Space = 1 << 1,
+        Digit = 1 << 2,
+        Letter = 1 << 3,
+        NonSpace = 1 << 4,
+        LeftBracket = 1 << 5,           //(
+        RightBracket = 1 << 6,          //)
+        LeftSquareBracket = 1 << 7,     //[
+        RightSquareBracket = 1 << 8,    //]
         //Dot = 1 << 4,
         Any = Space | Digit | Letter | NonSpace
     }

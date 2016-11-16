@@ -25,7 +25,7 @@ namespace Markdown.Languages
             }
             if (!parsingState.AllTagsClosed)
                 throw new ParseException($"Not all tags have been closed: {{{string.Join(", ", parsingState.CurrentOpenedTags)}}}");
-            return parsingState.Root;
+            return parsingState.Root.BuildIncomletGroups(this);
         }
         /*
         private SyntaxNode BuildIncomletGroups(SyntaxNode node)

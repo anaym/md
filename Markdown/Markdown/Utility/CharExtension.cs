@@ -7,6 +7,8 @@ namespace Markdown.Utility
     {
         public static bool IsMatch(this char c, CharType type)
         {
+            if (type.HasFlag(CharType.Inverse)) return !c.IsMatch(type ^ CharType.Inverse);
+
             if (type.HasFlag(CharType.Space)) if (Char.IsWhiteSpace(c)) return true;
             if (type.HasFlag(CharType.NonSpace)) if (!Char.IsWhiteSpace(c)) return true;
             if (type.HasFlag(CharType.Digit)) if (Char.IsDigit(c)) return true;

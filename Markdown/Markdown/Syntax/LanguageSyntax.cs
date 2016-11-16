@@ -51,7 +51,7 @@ namespace Markdown.Syntax
 
         public IEnumerable<Tag> GetTagInGroup(string groupName)
         {
-            return groups[groupName];
+            return groups[groupName].OrderBy(i => i.GroupIndex);
         }
 
         public IEnumerable<Tag> GetTagsAvailableInRoot()

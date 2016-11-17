@@ -179,6 +179,20 @@ namespace Markdown
         #region CorrectParse
 
         [Test]
+        public void CorrectlyParse_StringWithUrl_WhenUrlIsDoubleSlash()
+        {
+            var md = @"a [\\ ]() e";
+            var tree = mdLanguage.Parse(md);
+            var expected = Enumerable.Empty<SyntaxNode>()
+                .ConnectRaw("a ")
+                .ConnectTag("url.name", SyntaxNode.CreateRawString("\\ "))
+                .ConnectTag("url.address", Enumerable.Empty<SyntaxNode>())
+                .ConnectRaw(" e");
+            tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
+            var res = new HtmlLanguage().Build(tree);
+        }
+
+        [Test]
         public void CorrectlyParse_StringWithUrl_WhenUrlContinsNameAndAddress()
         {
             var md = "a [name](address) e";

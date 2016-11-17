@@ -33,7 +33,6 @@ namespace Markdown.Utility
         private bool IsMatch(EscapedString str, int pos, CharType template)
         {
             if (pos < 0 || pos >= str.Length) return true;
-            if (str[pos].IsEscaped) return false;
             return str[pos].Value.IsMatch(template);
         }
 

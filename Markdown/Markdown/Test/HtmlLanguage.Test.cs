@@ -21,12 +21,16 @@ namespace Markdown
         [TestCase("a b <em>c d</em> ", TestName = "is string with italic-tag")]
         [TestCase("a <strong>b <em>c d</em> e</strong>", TestName = "is string with italic-tag in bold-tag")]
         [TestCase("a <em>b <strong>c d</strong> e</em>", TestName = "is italic-tag and bold-tag permutation string")]
+
+        [TestCase("<a href=\"a\">text</a>", TestName = "is string with url")]
         public void CorrectlyRebuild(string source)
         {
             var tree = htmlLanguage.Parse(source);
             var build = htmlLanguage.Build(tree);
             build.Should().Be(source);
         }
+
+        #region Bold && Italic
 
         #region Not Parse Incorrect Strings
         [TestCase(@"\<em>ab</em>", TestName = "italic-tag")]
@@ -101,6 +105,13 @@ namespace Markdown
                 .ConnectRaw(" d");
             tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
         }
+        #endregion
+        #endregion
+
+        #region URL
+
+        
+
         #endregion
     }
 }

@@ -25,14 +25,15 @@ namespace Markdown.Languages
             syntax += new TagBuilder("url.address")
             {
                 Begin = new Template(CharType.Any, "<a href=\"", CharType.Any),
-                End = new Template(CharType.Any, "\">", CharType.Any), //TODO: могут быть проблемы при html-парсинге. Но их без нормальных регэкспов решать нехочу. Да и при корректном юрл все норм
+                //TODO: могут быть проблемы при html-парсинге. Но их без нормальных регэкспов решать нехочу. Да и при корректном юрл все норм
+                End = new Template(CharType.Any, "\"", CharType.Any),
                 IsRootableTag = true,
                 GroupIndex = 0,
                 GroupName = "url"
             };
             syntax += new TagBuilder("url.name")
             {
-                Begin = new Template(CharType.Any, "", CharType.Any), //TODO: а вот здесь серьезные проблемы при парсинге. Хз, считает ли он начало тега нудевой длины
+                Begin = new Template(CharType.Any, ">>", CharType.Any),
                 End = new Template(CharType.Any, "</a>", CharType.Any),
                 IsRootableTag = true,
                 GroupIndex = 1,

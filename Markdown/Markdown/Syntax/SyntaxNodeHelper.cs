@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Markdown
+namespace Markdown.Syntax
 {
-    internal static class SyntaxNodeHelper
+    public static class SyntaxNodeHelper
     {
         public static IEnumerable<SyntaxNode> ConnectRaw(this IEnumerable<SyntaxNode> nodes, string raw)
             => nodes.Union(new[] {SyntaxNode.CreateRawString(raw)});

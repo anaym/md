@@ -14,7 +14,7 @@ namespace Markdown.Test
         [TestCase(@"a \b cd\efg \\", @"a b cdefg \", TestName = "with escape of escape char")]
         public void CorrectlyParseEscapedLine_WhenString(string source, string expected)
         {
-            var parsed = new EscapedString(source, '\\');
+            var parsed = new ParsedString(source, '\\');
             parsed.ToString().Should().Be(expected);
         }
 
@@ -22,7 +22,7 @@ namespace Markdown.Test
         [TestCase(@"a\bbcde", 2, "bcd", TestName = "escaped string")]
         public void OrdinalEqual_WhenSourceIs(string src, int compareStart, string other)
         {
-            var parsed = new EscapedString(src, '\\');
+            var parsed = new ParsedString(src, '\\');
             parsed.SubstringOrdinalEqual(other, compareStart).Should().BeTrue();
         }
 
@@ -31,7 +31,7 @@ namespace Markdown.Test
         [TestCase(@"\\", 0, @"\", TestName = "one escape char")]
         public void NotOrdinalEqual_WhenSourceIs(string src, int compareStart, string other)
         {
-            var parsed = new EscapedString(src, '\\');
+            var parsed = new ParsedString(src, '\\');
             parsed.SubstringOrdinalEqual(other, compareStart).Should().BeFalse();
         }
     }

@@ -14,7 +14,7 @@ namespace Markdown.Utility
 
         public Template(CharType prevCharTemplate, string lexem, CharType nextCharTemplate)
         {
-            if (lexem == null) // TODO: old: if (string.IsNullOrEmpty(lexem))
+            if (string.IsNullOrEmpty(lexem))
                 throw new ArgumentException(nameof(lexem));
 
             this.prevCharTemplate = prevCharTemplate;
@@ -22,7 +22,7 @@ namespace Markdown.Utility
             this.nextCharTemplate = nextCharTemplate;
         }
 
-        public bool IsMatch(EscapedString str, int startPosition = 0)
+        public bool IsMatch(ParsedString str, int startPosition = 0)
         {
             if ((str.Length - startPosition) < Lexem.Length) return false;
             if (!IsMatch(str, startPosition + Lexem.Length, nextCharTemplate)) return false;
@@ -30,22 +30,20 @@ namespace Markdown.Utility
             return str.SubstringOrdinalEqual(Lexem, startPosition);
         }
 
-        private bool IsMatch(EscapedString str, int pos, CharType template)
+        public int? Find(ParsedString str, int findStart)
         {
-            if (pos < 0 || pos >= str.Length) return true;
-            return str[pos].Value.IsMatch(template);
-        }
-
-        public int? Find(EscapedString str, int start)
-        {
-            for (int begin = start; 
-                begin >= 0; 
-                begin = str.ParsedString.IndexOf(Lexem, begin, StringComparison.InvariantCulture))
+            while (findStart >= 0)
             {
-                if (IsMatch(str, begin)) return begin;
-                begin += 1;
+                if (IsMatch(str, findStart)) return findStart;
+                findStart = str.StringWithoutEscaping.IndexOf(Lexem, findStart + 1, StringComparison.InvariantCulture);
             }
             return null;
+        }
+
+        private bool IsMatch(ParsedString str, int pos, CharType expectedCharType)
+        {
+            if (pos < 0 || pos >= str.Length) return true;
+            return str[pos].Value.IsMatch(expectedCharType);
         }
 
         public override string ToString() => $"{prevCharTemplate}{Lexem}{nextCharTemplate}";

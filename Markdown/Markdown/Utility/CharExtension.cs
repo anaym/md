@@ -19,7 +19,6 @@ namespace Markdown.Utility
             if (type.HasFlag(CharType.LeftSquareBracket)) if (c == '[') return true;
             if (type.HasFlag(CharType.RightSquareBracket)) if (c == ']') return true;
 
-            //if (type.HasFlag(CharType.Dot)) if (c == '.') return true;
             return false;
         }
     }

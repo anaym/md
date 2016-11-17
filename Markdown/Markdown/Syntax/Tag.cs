@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using Markdown.StringParser;
 using Markdown.Utility;
@@ -18,14 +17,15 @@ namespace Markdown.Syntax
 
         private readonly List<string> nestedTags;
 
-        public bool IsAt(EscapedString str, int pos)
+        public bool IsAt(ParsedString str, int pos)
         {
+            if (pos < 0) return false;
             if (!Begin.IsMatch(str, pos)) return false;
             return End.Find(str, pos + Begin.Length) != null;
         }
 
         //потому что запрещены regexp-ы
-        public Tag(string name, Template begin, Template end, IEnumerable<string> nestedTags = null, int groupIndex = 0, string groupName = null)
+        public Tag(string name, Template begin, Template end, IEnumerable<string> nestedTags, int groupIndex, string groupName)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (begin == null) throw new ArgumentNullException(nameof(begin));

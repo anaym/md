@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Markdown.Languages.Exteptions;
 using Markdown.Syntax;
 
 namespace Markdown.Languages
@@ -24,6 +23,17 @@ namespace Markdown.Languages
             if (!parsingState.AllTagsClosed)
                 throw new ParseException($"Not all tags have been closed: {{{string.Join(", ", parsingState.CurrentOpenedTags)}}}");
             return parsingState.Root.RevertParseForIncompleteGroups(this);
+        }
+
+        public string Build(SyntaxNode tree)
+        {
+            if (tree.IsRawString)
+                return tree.TagName;
+            if (tree.TagName == null)
+                return string.Join("", tree.NestedNodes.OrderTagsInGroups(Syntax).Select(Build));
+            var construction = Syntax.GetTag(tree.TagName);
+            var nestedString = string.Join("", tree.NestedNodes.OrderTagsInGroups(Syntax).Select(Build));
+            return construction.Begin.Lexem + nestedString + construction.End.Lexem;
         }
 
         private int ReadNextTag(ParsingState parsingState)
@@ -69,34 +79,29 @@ namespace Markdown.Languages
 
         private static int FindEndOfRawText(ParsingState parsingState)
         {
-            var beginNested = parsingState
-                .CurrentAvailableTags
-                .Select(c => Tuple.Create(c, c.Begin.Find(parsingState.String, parsingState.Position)))
-                .Where(p => p.Item2 != null)
-                .OrderBy(p => p.Item2.Value)
-                .FirstOrDefault(p => p.Item1.IsAt(parsingState.String, p.Item2.Value))
-                ?.Item2;
+            var beginNested = FindBeginOfNested(parsingState);
 
-            var endNow = parsingState.CurrentTagName == LanguageSyntax.RootTagName ? null : parsingState.CurrentTag.End.Find(parsingState.String, parsingState.Position);
+            var endNow = parsingState.CurrentTagName == LanguageSyntax.RootTagName
+                ? null
+                : parsingState.CurrentTag.End.Find(parsingState.String, parsingState.Position);
 
             if (endNow == null)
             {
                 return beginNested ?? parsingState.String.Length;
             }
-            else
-            {
-                return beginNested == null ? endNow.Value : Math.Min(endNow.Value, beginNested.Value);
-            }
+            return beginNested == null ? endNow.Value : Math.Min(endNow.Value, beginNested.Value);
         }
 
-        public string Build(SyntaxNode tree)
+        private static int? FindBeginOfNested(ParsingState parsingState)
         {
-            if (tree.IsRawString)
-                return tree.TagName;
-            if (tree.TagName == null)
-                return string.Join("", tree.NestedNodes.OrderTagsInGroups(Syntax).Select(Build));
-            var construction = Syntax.GetTag(tree.TagName);
-            return construction.Begin.Lexem + string.Join("", tree.NestedNodes.OrderTagsInGroups(Syntax).Select(Build)) + construction.End.Lexem;
+            var beginableNested = parsingState
+                .CurrentAvailableTags
+                .Where(t => t.IsAt(parsingState.String, t.Begin.Find(parsingState.String, parsingState.Position) ?? -1))
+                .ToList();
+
+            if (beginableNested.Count == 0) return null;
+
+            return beginableNested.Select(t => t.Begin.Find(parsingState.String, parsingState.Position)).Min();
         }
     }
 }

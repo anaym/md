@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Markdown
+namespace Markdown.Syntax
 {
     public class SyntaxNode
     {
@@ -21,7 +21,7 @@ namespace Markdown
 
         public SyntaxNode(string tagName, bool isTag)
         {
-            this.TagName = tagName;
+            TagName = tagName;
             IsTag = isTag;
             nestedNodes = new List<SyntaxNode>();
         }

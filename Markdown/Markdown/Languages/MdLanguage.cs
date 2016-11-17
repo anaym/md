@@ -28,7 +28,8 @@ namespace Markdown.Languages
                 End = new Template(CharType.LeftSquareBracket | CharType.Inverse, "]", CharType.LeftBracket),
                 IsRootableTag = true,
                 GroupIndex = 0,
-                GroupName = "url"
+                GroupName = "url",
+                NestedTags = { "italic", "bold" }
             };
             syntax += new TagBuilder("url.address")
             {

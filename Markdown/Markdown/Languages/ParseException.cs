@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Markdown.Languages.Exteptions
+namespace Markdown.Languages
 {
     public class ParseException : Exception
     {

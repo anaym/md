@@ -4,36 +4,35 @@ using System.Linq;
 
 namespace Markdown.StringParser
 {
-    public class EscapedString : IEnumerable<Char>
+    public class ParsedString : IEnumerable<ParsedChar>
     {
-        public readonly string ParsedString;
+        public readonly string StringWithoutEscaping;
+        private readonly ParsedChar[] parsedChar;
 
-        private readonly Char[] chars;
-
-        public EscapedString(string str, char escapeChar)
+        public ParsedString(string str, char escapeChar)
         {
             var escaped = false;
-            chars = str
+            parsedChar = str
                 .Select(c => escaped ? ReadEscaped(c, out escaped) : ReadNonEscaped(c, escapeChar, out escaped))
                 .Where(p => p != null)
                 .Select(p => p.Value)
                 .ToArray();
-            ParsedString = string.Join("", chars.Select(c => c.Value));
+            StringWithoutEscaping = string.Join("", parsedChar.Select(c => c.Value));
         }
 
-        private static Char? ReadNonEscaped(char c, char escapeChar, out bool escaped)
+        private static ParsedChar? ReadNonEscaped(char c, char escapeChar, out bool escaped)
         {
             escaped = c == escapeChar;
-            return escaped ? (Char?)null : new Char(c, false);
+            return escaped ? (ParsedChar?)null : new ParsedChar(c, false);
         }
 
-        private static Char? ReadEscaped(char c, out bool escaped)
+        private static ParsedChar? ReadEscaped(char c, out bool escaped)
         {
             escaped = false;
-            return new Char(c, true);
+            return new ParsedChar(c, true);
         }
 
-        public int Length => chars.Length;
+        public int Length => parsedChar.Length;
 
         public bool SubstringOrdinalEqual(string other, int substringStart = 0)
         {
@@ -47,18 +46,18 @@ namespace Markdown.StringParser
             return true;
         }
 
-        public Char this[int index] => chars[index];
+        public ParsedChar this[int index] => parsedChar[index];
 
-        public IEnumerator<Char> GetEnumerator()
+        public IEnumerator<ParsedChar> GetEnumerator()
         {
-            return (IEnumerator<Char>)chars.GetEnumerator();
+            return (IEnumerator<ParsedChar>)parsedChar.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return chars.GetEnumerator();
+            return parsedChar.GetEnumerator();
         }
 
-        public override string ToString() => string.Join("", chars.Select(c => c.Value));
+        public override string ToString() => string.Join("", parsedChar.Select(c => c.Value));
     }
 }

@@ -12,7 +12,7 @@ namespace Markdown.Languages
 
         public IEnumerable<string> CurrentOpenedTags => tagStack.Select(n => n.TagName).Where(s => !string.IsNullOrEmpty(s));
 
-        public readonly EscapedString String;
+        public readonly ParsedString String;
         public readonly SyntaxNode Root;
 
         public int Position { get; set; }
@@ -23,7 +23,7 @@ namespace Markdown.Languages
         public string CurrentTagName => CurrentNode.TagName;
         public Tag CurrentTag
             => CurrentTagName == LanguageSyntax.RootTagName ? null : languageSyntax.GetTag(CurrentTagName);
-        
+
         public IEnumerable<Tag> CurrentAvailableTags
             => languageSyntax.GetAvailableTags(CurrentTagName);
 
@@ -37,7 +37,7 @@ namespace Markdown.Languages
         public ParsingState(string source, LanguageSyntax languageSyntax)
         {
             this.languageSyntax = languageSyntax;
-            String  = new EscapedString(source, languageSyntax.EscapeChar);
+            String  = new ParsedString(source, languageSyntax.EscapeChar);
             Position = 0;
             tagStack = new Stack<SyntaxNode>();
             Root = SyntaxNode.CreateTag(LanguageSyntax.RootTagName);

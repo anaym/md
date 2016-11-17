@@ -1,11 +1,11 @@
 ﻿namespace Markdown.StringParser
 {
-    public struct Char
+    public struct ParsedChar
     {
         public readonly char Value;
         public readonly bool IsEscaped;
 
-        public Char(char value, bool isEscaped)
+        public ParsedChar(char value, bool isEscaped)
         {
             Value = value;
             IsEscaped = isEscaped;

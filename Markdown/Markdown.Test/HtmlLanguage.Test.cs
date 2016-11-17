@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using Markdown.Languages;
+using Markdown.Syntax;
 using NUnit.Framework;
 
-namespace Markdown
+namespace Markdown.Test
 {
     [TestFixture]
     public class HtmlLanguage_Should

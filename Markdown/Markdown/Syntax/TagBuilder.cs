@@ -23,12 +23,8 @@ namespace Markdown.Syntax
             NestedTags = nestedTags.ToList();
         }
 
-        public TagBuilder(string tagName = null, Template begin = null, Template end = null, int groupIndex = 0, string groupName= null)
-            : this(tagName, begin, end, new string[0], groupIndex, groupName)
-        { }
-
-        public TagBuilder(Tag tag)
-            : this(tag.Name, tag.Begin, tag.End, tag.NestedTags, 0, null)
+        public TagBuilder(string tagName = null)
+            : this(tagName, null, null, new string[0], 0, null)
         { }
 
         public Tag Build() => new Tag(TagName, Begin, End, NestedTags, GroupIndex, GroupName);

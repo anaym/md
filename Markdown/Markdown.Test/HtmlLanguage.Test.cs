@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Markdown.Languages;
 using Markdown.Syntax;
+using Markdown.Syntax.Utility;
 using NUnit.Framework;
 
 namespace Markdown.Test
@@ -111,7 +114,21 @@ namespace Markdown.Test
 
         #region URL
 
-        
+        [Test]
+        public void CorrectBuildUrl_WithCLass()
+        {
+            var tags = Enumerable.Empty<SyntaxNode>()
+                .ConnectTag("url.address", SyntaxNode.CreateRawString("addr"))
+                .ConnectTag("url.name", SyntaxNode.CreateRawString("nm"));
+            var root = SyntaxNode.CreateTag(null);
+            root.AddManyNestedNode(tags);
+            root = root
+                .Insert()
+                .Tag("class")
+                .Between("url.address", "url.name")
+                .Do();
+            htmlLanguage.Build(root).Should().Be("<a href=\"addr\"class=\"\">nm</a>");
+        }
 
         #endregion
     }

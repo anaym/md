@@ -29,11 +29,18 @@ namespace Markdown.Languages
                 End = new Template(CharType.Any, "\"", CharType.Any),
                 IsRootableTag = true,
                 GroupIndex = 0,
-                GroupName = "url"
+                GroupName = "url",
+                NestedTags = { "italic", "bold" }
+            };
+            syntax += new TagBuilder("class")
+            {
+                Begin = new Template(CharType.Any, "class=\"", CharType.Any),
+                End = new Template(CharType.Any, "\"", CharType.Any),
+                IsRootableTag = true
             };
             syntax += new TagBuilder("url.name")
             {
-                Begin = new Template(CharType.Any, ">>", CharType.Any),
+                Begin = new Template(CharType.Any, ">", CharType.Any),
                 End = new Template(CharType.Any, "</a>", CharType.Any),
                 IsRootableTag = true,
                 GroupIndex = 1,

@@ -65,7 +65,10 @@
     <Compile Include="Languages\MdLanguage.cs" />
     <Compile Include="StringParser\ParsedChar.cs" />
     <Compile Include="Syntax\IncorrectSyntaxException.cs" />
-    <Compile Include="Syntax\SyntaxNodeHelper.cs" />
+    <Compile Include="Syntax\Utility\IProcessTask.cs" />
+    <Compile Include="Syntax\Utility\SyntaxNodeHelper.cs" />
+    <Compile Include="Syntax\Utility\SyntaxTreeOperations.cs" />
+    <Compile Include="Syntax\Utility\TreeProcessTask.cs" />
     <Compile Include="Utility\Template.cs" />
     <Compile Include="Utility\CharExtension.cs" />
     <Compile Include="Utility\CharType.cs" />

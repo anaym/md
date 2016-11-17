@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Markdown.Syntax
+namespace Markdown.Syntax.Utility
 {
     public static class SyntaxNodeHelper
     {

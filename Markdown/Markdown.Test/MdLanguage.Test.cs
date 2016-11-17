@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Markdown.Languages;
 using Markdown.Syntax;
+using Markdown.Syntax.Utility;
 using NUnit.Framework;
 
 namespace Markdown.Test

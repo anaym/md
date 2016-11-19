@@ -115,19 +115,15 @@ namespace Markdown.Test
         #region URL
 
         [Test]
-        public void CorrectBuildUrl_WithCLass()
+        public void CorrectBuildUrl_WithCssCLass()
         {
+            htmlLanguage = new HtmlLanguage(cssClass:"noname");
             var tags = Enumerable.Empty<SyntaxNode>()
-                .ConnectTag("url.address", SyntaxNode.CreateRawString("addr"))
+                .ConnectTag("url.address", SyntaxNode.CreateRawString("/addr"))
                 .ConnectTag("url.name", SyntaxNode.CreateRawString("nm"));
             var root = SyntaxNode.CreateTag(null);
             root.AddManyNestedNode(tags);
-            root = root
-                .Insert()
-                .Tag("class")
-                .Between("url.address", "url.name")
-                .Do();
-            htmlLanguage.Build(root).Should().Be("<a href=\"addr\"class=\"\">nm</a>");
+            htmlLanguage.Build(root, metaUrl:"meta").Should().Be("<a href=\"meta/addr\" class=\"noname\">nm</a>");
         }
 
         #endregion

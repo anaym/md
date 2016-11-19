@@ -13,7 +13,7 @@ namespace Markdown.Languages
             Syntax = syntax;
         }
 
-        public SyntaxNode Parse(string line)
+        public virtual SyntaxNode Parse(string line)
         {
             var parsingState = new ParsingState(line, Syntax);
             while (!parsingState.IsCompleted)
@@ -25,7 +25,7 @@ namespace Markdown.Languages
             return parsingState.Root.RevertParseForIncompleteGroups(this);
         }
 
-        public string Build(SyntaxNode tree)
+        public virtual string Build(SyntaxNode tree)
         {
             if (tree.IsRawString)
                 return tree.TagName;

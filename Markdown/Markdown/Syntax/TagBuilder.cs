@@ -13,6 +13,7 @@ namespace Markdown.Syntax
         public string GroupName { get; set; }
         public int GroupIndex { get; set; }
         public bool IsRootableTag;
+        public EnviromentType Enviroment;
 
         public TagBuilder(string tagName, Template begin, Template end, IEnumerable<string> nestedTags, int groupIndex, string groupName)
         {
@@ -27,6 +28,6 @@ namespace Markdown.Syntax
             : this(tagName, null, null, new string[0], 0, null)
         { }
 
-        public Tag Build() => new Tag(TagName, Begin, End, NestedTags, GroupIndex, GroupName, IsRootableTag);
+        public Tag Build() => new Tag(TagName, Begin, End, NestedTags, GroupIndex, GroupName, IsRootableTag, Enviroment);
     }
 }

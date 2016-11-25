@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Converters\GroupingHelper.cs" />
     <Compile Include="Converters\LanguageSyntaxHelper.cs" />
+    <Compile Include="Converters\MultilineSyntaxTreeParser.cs" />
     <Compile Include="Converters\ParseException.cs" />
     <Compile Include="Syntax\Builtins\HtmlLanguageSyntax.cs" />
     <Compile Include="Converters\ParsingState.cs" />
@@ -67,6 +68,8 @@
     <Compile Include="Converters\SyntaxTreeParser.cs" />
     <Compile Include="StringParser\ParsedChar.cs" />
     <Compile Include="Syntax\IncorrectSyntaxException.cs" />
+    <Compile Include="Syntax\Utility\EnviromentType.cs" />
+    <Compile Include="Syntax\Utility\EnviromentTypeHelper.cs" />
     <Compile Include="Syntax\Utility\IProcessTask.cs" />
     <Compile Include="Syntax\Utility\SyntaxNodeHelper.cs" />
     <Compile Include="Syntax\Utility\SyntaxTreeOperations.cs" />

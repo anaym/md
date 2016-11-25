@@ -9,6 +9,11 @@ namespace Markdown.Converters
             return new SyntaxTreeParser(syntax).Parse(line);
         }
 
+        public static SyntaxNode ParseMultiline(this LanguageSyntax syntax, string text)
+        {
+            return new MultilineSyntaxTreeParser(syntax).ParseMultiline(text);
+        }
+
         public static string Build(this LanguageSyntax syntax, SyntaxNode tree)
         {
             return new SyntaxTreeBuilder(syntax).Build(tree);

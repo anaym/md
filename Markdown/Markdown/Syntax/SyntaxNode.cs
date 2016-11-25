@@ -16,8 +16,17 @@ namespace Markdown.Syntax
         public static SyntaxNode CreateRawString(string rawString) => new SyntaxNode(rawString, false);
 
         public IEnumerable<SyntaxNode> NestedNodes => nestedNodes;
-        public void AddNestedNode(SyntaxNode node) => nestedNodes.Add(node);
-        public void AddManyNestedNode(IEnumerable<SyntaxNode> node) => nestedNodes.AddRange(node);
+        public SyntaxNode AddNestedNode(SyntaxNode node)
+        {
+            nestedNodes.Add(node);
+            return this;
+        }
+
+        public SyntaxNode AddManyNestedNode(IEnumerable<SyntaxNode> node)
+        {
+            nestedNodes.AddRange(node);
+            return this;
+        }
 
         public SyntaxNode(string tagName, bool isTag)
         {

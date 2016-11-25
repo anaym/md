@@ -40,6 +40,14 @@ namespace Markdown.Syntax.Builtins
                 GroupIndex = 1,
                 GroupName = "url"
             };
+
+            syntax += new TagBuilder("paragraph")
+            {
+                Begin = new Template(CharType.Any, "<p>", CharType.Any),
+                End = new Template(CharType.Any, "</p>", CharType.Any),
+                IsRootableTag = true,
+                NestedTags = { "bold", "italic", "url.name", "url.address" }
+            };
             return syntax.Build();
         }
 

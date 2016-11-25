@@ -20,7 +20,7 @@ namespace Markdown.Syntax.Builtins
                 End = new Template(CharType.Digit | CharType.Letter, "_", CharType.Space),
                 IsRootableTag = true
             };
-
+    
             syntax += new TagBuilder("url.name")
             {
                 Begin = new Template(CharType.Space, "[", CharType.Inverse | CharType.RightSquareBracket),
@@ -37,6 +37,14 @@ namespace Markdown.Syntax.Builtins
                 IsRootableTag = true,
                 GroupIndex = 1,
                 GroupName = "url"
+            };
+
+            syntax += new TagBuilder("paragraph")
+            {
+                Begin = new Template(CharType.Any, "", CharType.Any),
+                End = new Template(CharType.Any, "\n", CharType.Any),
+                Enviroment = EnviromentType.EmptyOrMissingAround,
+                NestedTags = {"bold", "italic", "url.name", "url.address"}
             };
             return syntax.Build();
         }

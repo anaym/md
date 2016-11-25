@@ -128,5 +128,21 @@ namespace Markdown.Test
         }
 
         #endregion
+
+        #region Paragraph
+
+        [Test]
+        public void CorrectBuildParagraphs()
+        {
+            htmlLanguageSyntax = new HtmlLanguageSyntax();
+            var tags = Enumerable.Empty<SyntaxNode>()
+                .ConnectTag("paragraph", SyntaxNode.CreateRawString("a"))
+                .ConnectTag("paragraph", SyntaxNode.CreateRawString("b"));
+            var root = SyntaxNode.CreateTag(null);
+            root.AddManyNestedNode(tags);
+            htmlLanguageSyntax.Build(root).Should().Be("<p>a</p><p>b</p>");
+        }
+
+        #endregion
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using Markdown.Languages;
+using Markdown.Converters;
 using Markdown.Syntax;
+using Markdown.Syntax.Builtins;
 using Markdown.Syntax.Utility;
 using NUnit.Framework;
 
@@ -10,12 +11,12 @@ namespace Markdown.Test
     [TestFixture]
     public class MdLanguage_Should
     {
-        private MdLanguage mdLanguage;
+        private MdLanguageSyntax mdLanguageSyntax;
 
         [SetUp]
         public void SetUp()
         {
-            mdLanguage = new MdLanguage();
+            mdLanguageSyntax = new MdLanguageSyntax();
         }
 
         #region Test Cases
@@ -32,8 +33,8 @@ namespace Markdown.Test
         #endregion
         public void CorrectlyRebuild_String(string source)
         {
-            var tree = mdLanguage.Parse(source);
-            var build = mdLanguage.Build(tree);
+            var tree = mdLanguageSyntax.Parse(source);
+            var build = mdLanguageSyntax.Build(tree);
             build.Should().Be(source);
         }
 
@@ -52,7 +53,7 @@ namespace Markdown.Test
         [TestCase("a_b_c_", TestName = "is letter-string ending with _")]
         public void NotParseItalic_WhenSource(string mdString)
         {
-            var tree = mdLanguage.Parse(mdString);
+            var tree = mdLanguageSyntax.Parse(mdString);
             tree.Size.Should().Be(2);
             var raw = tree.NestedNodes.First();
             raw.IsRawString.Should().BeTrue();
@@ -69,7 +70,7 @@ namespace Markdown.Test
         [TestCase("a__b__c", TestName = "is letter-string")]
         public void NotParseBold_WhenSource(string mdString)
         {
-            var tree = mdLanguage.Parse(mdString);
+            var tree = mdLanguageSyntax.Parse(mdString);
             tree.Size.Should().Be(2);
             var raw = tree.NestedNodes.First();
             raw.IsRawString.Should().BeTrue();
@@ -80,7 +81,7 @@ namespace Markdown.Test
         [Test]
         public void NotParseBold_WhenItInsideItalic()
         {
-            var tree = mdLanguage.Parse("_a __b c d__ e_");
+            var tree = mdLanguageSyntax.Parse("_a __b c d__ e_");
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectTag("italic", SyntaxNode.CreateRawString("a __b c d__ e"));
             tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
@@ -89,14 +90,14 @@ namespace Markdown.Test
         [Test]
         public void NotParse_WhenThereIsNoClosingTag()
         {
-            var tree = mdLanguage.Parse("__a _b");
+            var tree = mdLanguageSyntax.Parse("__a _b");
             tree.NestedNodes.ShouldAllBeEquivalentTo(new [] {SyntaxNode.CreateRawString("__a _b")}, o => o.WithStrictOrdering());
         }
 
         [Test]
         public void ThrowWhen_StringWith_OverlayTags()
         {
-            Assert.Throws<ParseException>(() => mdLanguage.Parse("__a _b c__ d_"));
+            Assert.Throws<ParseException>(() => mdLanguageSyntax.Parse("__a _b c__ d_"));
         }
         #endregion
 
@@ -105,7 +106,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithItalic()
         {
             var md = "a _b c d_ e";
-            var tree = mdLanguage.Parse(md);
+            var tree = mdLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("italic", SyntaxNode.CreateRawString("b c d"))
@@ -117,7 +118,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithBold()
         {
             var md = "a __b c d__ e";
-            var tree = mdLanguage.Parse(md);
+            var tree = mdLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("bold", SyntaxNode.CreateRawString("b c d"))
@@ -129,7 +130,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithItalicInBold()
         {
             var md = "c __a _b 1 2_ e__ d";
-            var tree = mdLanguage.Parse(md);
+            var tree = mdLanguageSyntax.Parse(md);
             var boldInside = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("italic", SyntaxNode.CreateRawString("b 1 2"))
@@ -145,7 +146,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithItalicAndBold()
         {
             var md = "c __a b 1__ _2 e_ d";
-            var tree = mdLanguage.Parse(md);
+            var tree = mdLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("c ")
                 .ConnectTag("bold", SyntaxNode.CreateRawString("a b 1"))
@@ -169,7 +170,7 @@ namespace Markdown.Test
         [TestCase(@"[](b)", TestName = "string without tag-name")]
         public void NotParseUrl_When(string mdString)
         {
-            var tree = mdLanguage.Parse(mdString);
+            var tree = mdLanguageSyntax.Parse(mdString);
             tree.Size.Should().Be(2);
             var raw = tree.NestedNodes.First();
             raw.IsRawString.Should().BeTrue();
@@ -183,35 +184,35 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithUrl_WhenUrlIsDoubleSlash()
         {
             var md = @"a [\\ ]() e";
-            var tree = mdLanguage.Parse(md);
+            var tree = mdLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("url.name", SyntaxNode.CreateRawString("\\ "))
                 .ConnectTag("url.address", Enumerable.Empty<SyntaxNode>())
                 .ConnectRaw(" e");
             tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
-            var res = new HtmlLanguage().Build(tree);
+            var res = new HtmlLanguageSyntax().Build(tree);
         }
 
         [Test]
         public void CorrectlyParse_StringWithUrl_WhenUrlContinsNameAndAddress()
         {
             var md = "a [name](address) e";
-            var tree = mdLanguage.Parse(md);
+            var tree = mdLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("url.name", SyntaxNode.CreateRawString("name"))
                 .ConnectTag("url.address", SyntaxNode.CreateRawString("address"))
                 .ConnectRaw(" e");
             tree.NestedNodes.ShouldAllBeEquivalentTo(expected, o => o.WithStrictOrdering());
-            var res = new HtmlLanguage().Build(tree);
+            var res = new HtmlLanguageSyntax().Build(tree);
         }
 
         [Test]
         public void CorrectlyParse_StringWithUrl_WhenUrlContinsOnlyName()
         {
             var md = "a [name]() e";
-            var tree = mdLanguage.Parse(md);
+            var tree = mdLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("url.name", SyntaxNode.CreateRawString("name"))
@@ -224,7 +225,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithTwoUrls()
         {
             var md = "a [n1](a1) [n2](a2) e";
-            var tree = mdLanguage.Parse(md);
+            var tree = mdLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("url.name", SyntaxNode.CreateRawString("n1"))

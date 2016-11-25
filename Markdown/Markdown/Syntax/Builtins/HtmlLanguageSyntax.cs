@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using Markdown.Syntax;
-using Markdown.Utility;
+﻿using Markdown.Utility;
 
-namespace Markdown.Languages
+namespace Markdown.Syntax.Builtins
 {
-    public class HtmlLanguage : Language
+    public class HtmlLanguageSyntax : LanguageSyntax
     {
         private static LanguageSyntax CreateHtmlSyntax(string cssClass)
         {
@@ -45,42 +43,8 @@ namespace Markdown.Languages
             return syntax.Build();
         }
 
-        public HtmlLanguage(string cssClass = null) : base(CreateHtmlSyntax(cssClass))
+        public HtmlLanguageSyntax(string cssClass = null) : base(CreateHtmlSyntax(cssClass))
         {
-        }
-
-        public string Build(SyntaxNode tree, string metaUrl)
-        {
-            var newTree = InsertMetaUrl(tree, metaUrl);
-            return base.Build(newTree);
-        }
-
-        private SyntaxNode InsertMetaUrl(SyntaxNode root, string metaUrl)
-        {
-            if (root.IsRawString) return root;
-            var tag = SyntaxNode.CreateTag(root.TagName);
-            foreach (var nested in root.NestedNodes)
-            {
-                if (nested.TagName == "url.address")
-                {
-                    if (nested.NestedNodes.Count() == 0 || nested.NestedNodes.First().TagName.StartsWith("/"))
-                    {
-                        var url = SyntaxNode.CreateTag("url.address");
-                        url.AddNestedNode(SyntaxNode.CreateRawString(metaUrl));
-                        url.AddManyNestedNode(nested.NestedNodes);
-                        tag.AddNestedNode(url);
-                    }
-                    else
-                    {
-                        tag.AddNestedNode(InsertMetaUrl(nested, metaUrl));
-                    }
-                }
-                else
-                {
-                    tag.AddNestedNode(InsertMetaUrl(nested, metaUrl));
-                }
-            }
-            return tag;
         }
     }
 }

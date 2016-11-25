@@ -14,18 +14,18 @@ namespace Markdown.Syntax
         private readonly ImmutableDictionary<string, ImmutableList<Tag>> groups;
 
         public readonly char EscapeChar;
-        public readonly ImmutableHashSet<string> Alphabet;
-
         public readonly ImmutableHashSet<string> Groups;
 
+        public LanguageSyntax(LanguageSyntax syntax) : this(syntax.tags.Select(p => p.Value), syntax.EscapeChar)
+        { }
 
-        public LanguageSyntax(IEnumerable<string> rootTags, IEnumerable<Tag> tags, char escapeChar)
+        public LanguageSyntax(IEnumerable<Tag> tags, char escapeChar)
         {
             EscapeChar = escapeChar;
-            this.rootTags = rootTags.ToImmutableHashSet();
+            rootTags = tags.Where(t => t.IsRootableTag).Select(t => t.Name).ToImmutableHashSet();
             this.tags = tags.ToImmutableDictionary(c => c.Name, c => c);
-            Alphabet = this.tags.Select(p => p.Key).Union(this.rootTags).ToImmutableHashSet();
-            var notDescribedTags = Alphabet.Except(this.tags.Select(p => p.Key));
+            var alphabet = this.tags.Select(p => p.Key).ToImmutableHashSet();
+            var notDescribedTags = this.tags.SelectMany(p => p.Value.NestedTags).Except(alphabet).ToList();
             if (notDescribedTags.Count != 0)
             {
                 throw new IncorrectSyntaxException($"Not all tags has been described: {notDescribedTags.SequenceToString()}"); 

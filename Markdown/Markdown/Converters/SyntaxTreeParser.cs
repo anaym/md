@@ -2,13 +2,13 @@
 using System.Linq;
 using Markdown.Syntax;
 
-namespace Markdown.Languages
+namespace Markdown.Converters
 {
-    public class Language
+    public class SyntaxTreeParser
     {
         public readonly LanguageSyntax Syntax;
 
-        public Language(LanguageSyntax syntax)
+        public SyntaxTreeParser(LanguageSyntax syntax)
         {
             Syntax = syntax;
         }
@@ -22,24 +22,13 @@ namespace Markdown.Languages
             }
             if (!parsingState.AllTagsClosed)
                 throw new ParseException($"Not all tags have been closed: {{{string.Join(", ", parsingState.CurrentOpenedTags)}}}");
-            return parsingState.Root.RevertParseForIncompleteGroups(this);
-        }
-
-        public virtual string Build(SyntaxNode tree)
-        {
-            if (tree.IsRawString)
-                return tree.TagName;
-            if (tree.TagName == null)
-                return string.Join("", tree.NestedNodes.OrderTagsInGroups(Syntax).Select(Build));
-            var construction = Syntax.GetTag(tree.TagName);
-            var nestedString = string.Join("", tree.NestedNodes.OrderTagsInGroups(Syntax).Select(Build));
-            return construction.Begin.Lexem + nestedString + construction.End.Lexem;
+            return parsingState.Root.RevertParseForIncompleteGroups(Syntax);
         }
 
         private int ReadNextTag(ParsingState parsingState)
         {
-            var pos = ReadEndOfCurrentTag(parsingState) ?? 
-                ReadBeginOfNestedTag(parsingState) ?? 
+            var pos = ReadEndOfCurrentTag(parsingState) ??
+                ReadBeginOfNestedTag(parsingState) ??
                 ReadRawText(parsingState);
             if (pos == null)
                 throw new InvalidOperationException("Bad string");

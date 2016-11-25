@@ -27,6 +27,6 @@ namespace Markdown.Syntax
             : this(tagName, null, null, new string[0], 0, null)
         { }
 
-        public Tag Build() => new Tag(TagName, Begin, End, NestedTags, GroupIndex, GroupName);
+        public Tag Build() => new Tag(TagName, Begin, End, NestedTags, GroupIndex, GroupName, IsRootableTag);
     }
 }

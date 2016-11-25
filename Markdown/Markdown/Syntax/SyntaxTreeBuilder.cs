@@ -7,7 +7,6 @@ namespace Markdown.Syntax
     public class LanguageSyntaxBuilder
     {
         public readonly HashSet<TagBuilder> Tags;
-
         public readonly char EscapeChar;
 
         public LanguageSyntaxBuilder(char escapeChar)
@@ -18,10 +17,9 @@ namespace Markdown.Syntax
 
         public LanguageSyntax Build() => new LanguageSyntax(Tags.Select(p => p.Build()), EscapeChar);
 
-        public LanguageSyntaxBuilder Add(TagBuilder tag)
+        public void Add(TagBuilder tag)
         {
             Tags.Add(tag);
-            return this;
         }
 
         public static LanguageSyntaxBuilder operator +(LanguageSyntaxBuilder self, TagBuilder tag)

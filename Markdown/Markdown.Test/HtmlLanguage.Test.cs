@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Markdown.Languages;
+using Markdown.Converters;
 using Markdown.Syntax;
+using Markdown.Syntax.Builtins;
 using Markdown.Syntax.Utility;
 using NUnit.Framework;
 
@@ -12,12 +13,12 @@ namespace Markdown.Test
     [TestFixture]
     public class HtmlLanguage_Should
     {
-        private HtmlLanguage htmlLanguage;
+        private HtmlLanguageSyntax htmlLanguageSyntax;
 
         [SetUp]
         public void SetUp()
         {
-            htmlLanguage = new HtmlLanguage();
+            htmlLanguageSyntax = new HtmlLanguageSyntax();
         }
 
         [TestCase("a b c d", TestName = "is simple string")]
@@ -29,8 +30,8 @@ namespace Markdown.Test
         [TestCase("<a href=\"a\">text</a>", TestName = "is string with url")]
         public void CorrectlyRebuild(string source)
         {
-            var tree = htmlLanguage.Parse(source);
-            var build = htmlLanguage.Build(tree);
+            var tree = htmlLanguageSyntax.Parse(source);
+            var build = htmlLanguageSyntax.Build(tree);
             build.Should().Be(source);
         }
 
@@ -41,7 +42,7 @@ namespace Markdown.Test
         [TestCase(@"\<strong>ab</strong>", TestName = "bold-tag")]
         public void NotParse_WhenSourceIsStringWithEscaped(string mdString)
         {
-            var tree = htmlLanguage.Parse(mdString);
+            var tree = htmlLanguageSyntax.Parse(mdString);
             tree.Size.Should().Be(2);
             var raw = tree.NestedNodes.First();
             raw.IsRawString.Should().BeTrue();
@@ -50,7 +51,7 @@ namespace Markdown.Test
         [Test]
         public void NotParse_WhenThereIsNoClosingTag()
         {
-            var tree = htmlLanguage.Parse("<em>a <strong>b");
+            var tree = htmlLanguageSyntax.Parse("<em>a <strong>b");
             tree.NestedNodes.ShouldAllBeEquivalentTo(new [] {SyntaxNode.CreateRawString("<em>a <strong>b") }, o => o.WithStrictOrdering());
         }
         #endregion
@@ -60,7 +61,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithItalic()
         {
             var md = "a <em>b c d</em> e";
-            var tree = htmlLanguage.Parse(md);
+            var tree = htmlLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("italic", SyntaxNode.CreateRawString("b c d"))
@@ -72,7 +73,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithBold()
         {
             var md = "a <strong>b c d</strong> e";
-            var tree = htmlLanguage.Parse(md);
+            var tree = htmlLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("bold", SyntaxNode.CreateRawString("b c d"))
@@ -84,7 +85,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithItalicInBold()
         {
             var md = "c <strong>a <em>b 1 2</em> e</strong> d";
-            var tree = htmlLanguage.Parse(md);
+            var tree = htmlLanguageSyntax.Parse(md);
             var boldInside = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("a ")
                 .ConnectTag("italic", SyntaxNode.CreateRawString("b 1 2"))
@@ -100,7 +101,7 @@ namespace Markdown.Test
         public void CorrectlyParse_StringWithItalicAndBold()
         {
             var md = "c <strong>a b 1</strong> <em>2 e</em> d";
-            var tree = htmlLanguage.Parse(md);
+            var tree = htmlLanguageSyntax.Parse(md);
             var expected = Enumerable.Empty<SyntaxNode>()
                 .ConnectRaw("c ")
                 .ConnectTag("bold", SyntaxNode.CreateRawString("a b 1"))
@@ -117,13 +118,13 @@ namespace Markdown.Test
         [Test]
         public void CorrectBuildUrl_WithCssCLass()
         {
-            htmlLanguage = new HtmlLanguage(cssClass:"noname");
+            htmlLanguageSyntax = new HtmlLanguageSyntax(cssClass:"noname");
             var tags = Enumerable.Empty<SyntaxNode>()
                 .ConnectTag("url.address", SyntaxNode.CreateRawString("/addr"))
                 .ConnectTag("url.name", SyntaxNode.CreateRawString("nm"));
             var root = SyntaxNode.CreateTag(null);
             root.AddManyNestedNode(tags);
-            htmlLanguage.Build(root, metaUrl:"meta").Should().Be("<a href=\"meta/addr\" class=\"noname\">nm</a>");
+            htmlLanguageSyntax.Build(root, metaUrl:"meta").Should().Be("<a href=\"meta/addr\" class=\"noname\">nm</a>");
         }
 
         #endregion

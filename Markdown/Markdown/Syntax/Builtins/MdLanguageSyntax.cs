@@ -1,9 +1,8 @@
-﻿using Markdown.Syntax;
-using Markdown.Utility;
+﻿using Markdown.Utility;
 
-namespace Markdown.Languages
+namespace Markdown.Syntax.Builtins
 {
-    public class MdLanguage : Language
+    public class MdLanguageSyntax : LanguageSyntax
     {
         private static LanguageSyntax CreateMdSyntax()
         {
@@ -42,7 +41,7 @@ namespace Markdown.Languages
             return syntax.Build();
         }
 
-        public MdLanguage() : base(CreateMdSyntax())
+        public MdLanguageSyntax() : base(CreateMdSyntax())
         { }
     }
 }

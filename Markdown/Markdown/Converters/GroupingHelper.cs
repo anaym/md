@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Security.AccessControl;
-using System.Xml;
 using Markdown.Syntax;
-using Markdown.Utility;
 using Utility.Linq;
 
-namespace Markdown.Languages
+namespace Markdown.Converters
 {
     internal static class GroupingHelper
     {
-        public static SyntaxNode RevertParseForIncompleteGroups(this SyntaxNode root, Language language)
+        public static SyntaxNode RevertParseForIncompleteGroups(this SyntaxNode root, LanguageSyntax syntax)
         {
             if (root.IsRawString) return root;
             var newRoot = SyntaxNode.CreateTag(root.TagName);
-            var nested = root.NestedNodes.Select(n => n.RevertParseForIncompleteGroups(language)).ToList();
-            var processed = nested.RevertParseForIncompleteGroups(language).ConcatRaw();
+            var nested = root.NestedNodes.Select(n => n.RevertParseForIncompleteGroups(syntax)).ToList();
+            var processed = nested.RevertParseForIncompleteGroups(syntax).ConcatRaw();
             newRoot.AddManyNestedNode(processed.SelectMany(a => a));
             return newRoot;
         }
@@ -47,12 +42,12 @@ namespace Markdown.Languages
             if (buffer != null) yield return new List<SyntaxNode> { SyntaxNode.CreateRawString(buffer) };
         }
 
-        private static IEnumerable<IReadOnlyList<SyntaxNode>> RevertParseForIncompleteGroups(this IEnumerable<SyntaxNode> tags, Language language)
+        private static IEnumerable<IReadOnlyList<SyntaxNode>> RevertParseForIncompleteGroups(this IEnumerable<SyntaxNode> tags, LanguageSyntax syntax)
         {
-            var groups = tags.CutToGroups(language.Syntax).ToList();
+            var groups = tags.CutToGroups(syntax).ToList();
             foreach (var group in groups)
             {
-                if (group.First().IsRawString || language.Syntax.GetTag(group.First().TagName).GroupName == null)
+                if (group.First().IsRawString || syntax.GetTag(group.First().TagName).GroupName == null)
                 {
                     foreach (var node in group)
                     {
@@ -61,11 +56,11 @@ namespace Markdown.Languages
                 }
                 else
                 {
-                    var groupName = language.Syntax.GetTag(group.First().TagName).GroupName;
-                    var expected = language.Syntax.GetTagInGroup(groupName);
+                    var groupName = syntax.GetTag(group.First().TagName).GroupName;
+                    var expected = syntax.GetTagInGroup(groupName);
                     if (group.Count != expected.Count())
                     {
-                        var str = group.Select(n => language.Build(n)).SequenceToString("", "", "");
+                        var str = group.Select(syntax.Build).SequenceToString("", "", "");
                         yield return new List<SyntaxNode> {SyntaxNode.CreateRawString(str)};
                     }
                     else

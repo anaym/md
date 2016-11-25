@@ -15,6 +15,7 @@ namespace Markdown.Syntax
         public string GroupName { get; }
         public int GroupIndex { get; }
 
+        public readonly bool IsRootableTag;
         private readonly List<string> nestedTags;
 
         public bool IsAt(ParsedString str, int pos)
@@ -25,7 +26,7 @@ namespace Markdown.Syntax
         }
 
         //потому что запрещены regexp-ы
-        public Tag(string name, Template begin, Template end, IEnumerable<string> nestedTags, int groupIndex, string groupName)
+        public Tag(string name, Template begin, Template end, IEnumerable<string> nestedTags, int groupIndex, string groupName, bool isRootableTag)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (begin == null) throw new ArgumentNullException(nameof(begin));
@@ -38,6 +39,7 @@ namespace Markdown.Syntax
             GroupIndex = groupIndex;
             this.nestedTags = nestedTags?.ToList() ?? new List<string>();
             GroupName = groupName;
+            IsRootableTag = isRootableTag;
         }
     }
 }

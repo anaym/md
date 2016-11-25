@@ -57,12 +57,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Languages\GroupingHelper.cs" />
-    <Compile Include="Languages\ParseException.cs" />
-    <Compile Include="Languages\HtmlLanguage.cs" />
-    <Compile Include="Languages\Language.cs" />
-    <Compile Include="Languages\ParsingState.cs" />
-    <Compile Include="Languages\MdLanguage.cs" />
+    <Compile Include="Converters\GroupingHelper.cs" />
+    <Compile Include="Converters\LanguageSyntaxHelper.cs" />
+    <Compile Include="Converters\ParseException.cs" />
+    <Compile Include="Syntax\Builtins\HtmlLanguageSyntax.cs" />
+    <Compile Include="Converters\ParsingState.cs" />
+    <Compile Include="Syntax\Builtins\MdLanguageSyntax.cs" />
+    <Compile Include="Converters\SyntaxTreeBuilder.cs" />
+    <Compile Include="Converters\SyntaxTreeParser.cs" />
     <Compile Include="StringParser\ParsedChar.cs" />
     <Compile Include="Syntax\IncorrectSyntaxException.cs" />
     <Compile Include="Syntax\Utility\IProcessTask.cs" />

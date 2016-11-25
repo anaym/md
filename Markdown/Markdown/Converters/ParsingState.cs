@@ -3,7 +3,7 @@ using System.Linq;
 using Markdown.StringParser;
 using Markdown.Syntax;
 
-namespace Markdown.Languages
+namespace Markdown.Converters
 {
     internal class ParsingState
     {
